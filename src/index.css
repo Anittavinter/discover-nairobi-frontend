@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: "Inter", system-ui, sans-serif;
+    --font-display: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 96%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 16 82% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 274 92% 38%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 17% 98%;
+    --muted-foreground: 210 11% 46%;
+    --accent: 194 100% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 348 87% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 16% 93%;
+    --input: 210 16% 93%;
+    --ring: 16 82% 60%;
+    --radius: 0.5rem;
+    --chart-1: 16 82% 60%;
+    --chart-2: 274 92% 38%;
+    --chart-3: 194 100% 42%;
+    --chart-4: 165 82% 51%;
+    --chart-5: 41 98% 51%;
+  }
+
+  .dark {
+    --background: 0 0% 6%;
+    --foreground: 210 17% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 210 17% 98%;
+    --popover: 0 0% 14%;
+    --popover-foreground: 210 17% 98%;
+    --primary: 16 100% 68%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 280 67% 58%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 210 10% 71%;
+    --accent: 194 71% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 348 87% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 10% 24%;
+    --input: 210 10% 24%;
+    --ring: 16 100% 68%;
+  }
+}
+
+@layer utilities {
+  .hover-elevate {
+    @apply transition-colors;
+  }
+  
+  .hover-elevate:hover {
+    @apply brightness-95 dark:brightness-110;
+  }
+  
+  .active-elevate-2:active {
+    @apply brightness-90 dark:brightness-125;
+  }
+}
