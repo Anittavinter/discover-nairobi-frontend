@@ -1,70 +1,92 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --font-sans: "Inter", system-ui, sans-serif;
-    --font-display: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
-    
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
-    --popover: 0 0% 96%;
-    --popover-foreground: 0 0% 10%;
-    --primary: 16 82% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 274 92% 38%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 210 17% 98%;
-    --muted-foreground: 210 11% 46%;
-    --accent: 194 100% 42%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 348 87% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 210 16% 93%;
-    --input: 210 16% 93%;
-    --ring: 16 82% 60%;
-    --radius: 0.5rem;
-    --chart-1: 16 82% 60%;
-    --chart-2: 274 92% 38%;
-    --chart-3: 194 100% 42%;
-    --chart-4: 165 82% 51%;
-    --chart-5: 41 98% 51%;
-  }
+@theme {
+  /* Nairobi Colors - Light Mode */
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(20% 0 0);
+  --color-border: oklch(93% 0.005 240);
+  
+  --color-card: oklch(99% 0 0);
+  --color-card-foreground: oklch(20% 0 0);
+  
+  --color-primary: oklch(68% 0.15 30);
+  --color-primary-foreground: oklch(100% 0 0);
+  
+  --color-secondary: oklch(48% 0.25 295);
+  --color-secondary-foreground: oklch(100% 0 0);
+  
+  --color-muted: oklch(98% 0.005 240);
+  --color-muted-foreground: oklch(56% 0.015 240);
+  
+  --color-accent: oklch(58% 0.18 220);
+  --color-accent-foreground: oklch(100% 0 0);
+  
+  --color-destructive: oklch(65% 0.22 15);
+  --color-destructive-foreground: oklch(100% 0 0);
+  
+  --color-input: oklch(82% 0.01 240);
+  --color-ring: oklch(68% 0.15 30);
+  
+  --color-chart-1: oklch(68% 0.15 30);
+  --color-chart-2: oklch(48% 0.25 295);
+  --color-chart-3: oklch(58% 0.18 220);
+  --color-chart-4: oklch(58% 0.18 175);
+  --color-chart-5: oklch(65% 0.20 85);
+  
+  --radius: 0.5rem;
+}
 
-  .dark {
-    --background: 0 0% 6%;
-    --foreground: 210 17% 98%;
-    --card: 0 0% 10%;
-    --card-foreground: 210 17% 98%;
-    --popover: 0 0% 14%;
-    --popover-foreground: 210 17% 98%;
-    --primary: 16 100% 68%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 280 67% 58%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 210 10% 71%;
-    --accent: 194 71% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 348 87% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 210 10% 24%;
-    --input: 210 10% 24%;
-    --ring: 16 100% 68%;
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: oklch(12% 0 0);
+    --color-foreground: oklch(98% 0.005 240);
+    --color-border: oklch(28% 0.01 240);
+    
+    --color-card: oklch(16% 0 0);
+    --color-card-foreground: oklch(98% 0.005 240);
+    
+    --color-primary: oklch(72% 0.18 30);
+    --color-primary-foreground: oklch(100% 0 0);
+    
+    --color-secondary: oklch(65% 0.20 295);
+    --color-secondary-foreground: oklch(100% 0 0);
+    
+    --color-muted: oklch(16% 0 0);
+    --color-muted-foreground: oklch(76% 0.01 240);
+    
+    --color-accent: oklch(68% 0.16 220);
+    --color-accent-foreground: oklch(100% 0 0);
+    
+    --color-destructive: oklch(65% 0.22 15);
+    --color-destructive-foreground: oklch(100% 0 0);
+    
+    --color-input: oklch(45% 0.01 240);
+    --color-ring: oklch(72% 0.18 30);
+    
+    --color-chart-1: oklch(72% 0.18 30);
+    --color-chart-2: oklch(65% 0.20 295);
+    --color-chart-3: oklch(68% 0.16 220);
+    --color-chart-4: oklch(68% 0.17 175);
+    --color-chart-5: oklch(70% 0.18 85);
   }
 }
 
-@layer utilities {
-  .hover-elevate {
-    @apply transition-colors;
-  }
-  
-  .hover-elevate:hover {
-    @apply brightness-95 dark:brightness-110;
-  }
-  
-  .active-elevate-2:active {
-    @apply brightness-90 dark:brightness-125;
-  }
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.font-display {
+  font-family: "Plus Jakarta Sans", Inter, sans-serif;
+}
+
+.hover-elevate {
+  transition: all 0.2s;
+}
+
+.hover-elevate:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.active-elevate-2:active {
+  transform: scale(0.98);
 }
