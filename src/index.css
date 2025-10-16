@@ -1,92 +1,169 @@
 @import "tailwindcss";
 
-@theme {
-  /* Nairobi Colors - Light Mode */
-  --color-background: oklch(100% 0 0);
-  --color-foreground: oklch(20% 0 0);
-  --color-border: oklch(93% 0.005 240);
-  
-  --color-card: oklch(99% 0 0);
-  --color-card-foreground: oklch(20% 0 0);
-  
-  --color-primary: oklch(68% 0.15 30);
-  --color-primary-foreground: oklch(100% 0 0);
-  
-  --color-secondary: oklch(48% 0.25 295);
-  --color-secondary-foreground: oklch(100% 0 0);
-  
-  --color-muted: oklch(98% 0.005 240);
-  --color-muted-foreground: oklch(56% 0.015 240);
-  
-  --color-accent: oklch(58% 0.18 220);
-  --color-accent-foreground: oklch(100% 0 0);
-  
-  --color-destructive: oklch(65% 0.22 15);
-  --color-destructive-foreground: oklch(100% 0 0);
-  
-  --color-input: oklch(82% 0.01 240);
-  --color-ring: oklch(68% 0.15 30);
-  
-  --color-chart-1: oklch(68% 0.15 30);
-  --color-chart-2: oklch(48% 0.25 295);
-  --color-chart-3: oklch(58% 0.18 220);
-  --color-chart-4: oklch(58% 0.18 175);
-  --color-chart-5: oklch(65% 0.20 85);
-  
-  --radius: 0.5rem;
+/* LIGHT MODE */
+:root {
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(0,0,0, .08);
+
+  --background: 0 0% 100%;
+  --foreground: 0 0% 10%;
+  --border: 210 16% 93%;
+  --card: 0 0% 99%;
+  --card-foreground: 0 0% 10%;
+  --card-border: 210 16% 90%;
+
+  --sidebar: 210 6% 97%;
+  --sidebar-foreground: 0 0% 10%;
+  --sidebar-border: 210 16% 88%;
+  --sidebar-primary: 16 82% 60%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 210 12% 92%;
+  --sidebar-accent-foreground: 0 0% 15%;
+  --sidebar-ring: 16 82% 60%;
+
+  --popover: 0 0% 96%;
+  --popover-foreground: 0 0% 10%;
+  --popover-border: 210 16% 86%;
+
+  --primary: 16 82% 60%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 274 92% 38%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 210 17% 98%;
+  --muted-foreground: 210 11% 46%;
+
+  --accent: 194 100% 42%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 348 87% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 210 16% 82%;
+  --ring: 16 82% 60%;
+
+  --chart-1: 16 82% 60%;
+  --chart-2: 274 92% 38%;
+  --chart-3: 194 100% 42%;
+  --chart-4: 162 90% 43%;
+  --chart-5: 42 100% 50%;
+
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Plus Jakarta Sans", Inter, sans-serif;
+  --radius: .5rem;
+
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --primary-border: hsl(var(--primary));
+  --secondary-border: hsl(var(--secondary));
+  --muted-border: hsl(var(--muted));
+  --accent-border: hsl(var(--accent));
+  --destructive-border: hsl(var(--destructive));
 }
 
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: oklch(12% 0 0);
-    --color-foreground: oklch(98% 0.005 240);
-    --color-border: oklch(28% 0.01 240);
-    
-    --color-card: oklch(16% 0 0);
-    --color-card-foreground: oklch(98% 0.005 240);
-    
-    --color-primary: oklch(72% 0.18 30);
-    --color-primary-foreground: oklch(100% 0 0);
-    
-    --color-secondary: oklch(65% 0.20 295);
-    --color-secondary-foreground: oklch(100% 0 0);
-    
-    --color-muted: oklch(16% 0 0);
-    --color-muted-foreground: oklch(76% 0.01 240);
-    
-    --color-accent: oklch(68% 0.16 220);
-    --color-accent-foreground: oklch(100% 0 0);
-    
-    --color-destructive: oklch(65% 0.22 15);
-    --color-destructive-foreground: oklch(100% 0 0);
-    
-    --color-input: oklch(45% 0.01 240);
-    --color-ring: oklch(72% 0.18 30);
-    
-    --color-chart-1: oklch(72% 0.18 30);
-    --color-chart-2: oklch(65% 0.20 295);
-    --color-chart-3: oklch(68% 0.16 220);
-    --color-chart-4: oklch(68% 0.17 175);
-    --color-chart-5: oklch(70% 0.18 85);
-  }
+.dark {
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(255,255,255, .09);
+
+  --background: 0 0% 6%;
+  --foreground: 210 17% 98%;
+  --border: 210 10% 23%;
+  --card: 0 0% 10%;
+  --card-foreground: 210 17% 98%;
+  --card-border: 210 10% 28%;
+
+  --sidebar: 0 0% 12%;
+  --sidebar-foreground: 210 17% 98%;
+  --sidebar-border: 210 10% 30%;
+  --sidebar-primary: 16 100% 68%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 16%;
+  --sidebar-accent-foreground: 210 17% 98%;
+  --sidebar-ring: 16 100% 68%;
+
+  --popover: 0 0% 14%;
+  --popover-foreground: 210 17% 98%;
+  --popover-border: 210 10% 32%;
+
+  --primary: 16 100% 68%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 280 67% 58%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 0 0% 10%;
+  --muted-foreground: 210 10% 71%;
+
+  --accent: 194 71% 60%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 348 87% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 210 10% 40%;
+  --ring: 16 100% 68%;
+
+  --chart-1: 16 100% 68%;
+  --chart-2: 280 67% 58%;
+  --chart-3: 194 71% 60%;
+  --chart-4: 162 73% 60%;
+  --chart-5: 42 100% 62%;
 }
 
 body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
-.font-display {
-  font-family: "Plus Jakarta Sans", Inter, sans-serif;
+.hover-elevate,
+.active-elevate-2 {
+  position: relative;
+  z-index: 0;
 }
 
-.hover-elevate {
-  transition: all 0.2s;
+.hover-elevate::after,
+.active-elevate-2::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 999;
 }
 
-.hover-elevate:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+.hover-elevate:hover::after {
+  background-color: var(--elevate-1);
 }
 
-.active-elevate-2:active {
-  transform: scale(0.98);
+.active-elevate-2:active::after {
+  background-color: var(--elevate-2);
+}
+
+.toggle-elevate::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: -1;
+}
+
+.toggle-elevate.toggle-elevated::before {
+  background-color: var(--elevate-2);
+}
+
+.border.toggle-elevate::before {
+  inset: -1px;
+}
+
+.border.hover-elevate::after,
+.border.active-elevate-2::after {
+  inset: -1px;
 }

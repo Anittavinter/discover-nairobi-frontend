@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Clock, Calendar } from "lucide-react";
 import { CategoryBadge, type Category } from "./CategoryBadge";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
 export interface Event {
@@ -27,14 +26,6 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onClick }: EventCardProps) {
-  const timeOfDay = () => {
-    const hour = parseInt(event.time.split(":")[0]);
-    if (hour < 12) return "morning";
-    if (hour < 17) return "afternoon";
-    if (hour < 21) return "evening";
-    return "night";
-  };
-
   const getGradient = () => {
     const hour = parseInt(event.time.split(":")[0]);
     if (hour < 12) return "from-chart-4 to-accent";

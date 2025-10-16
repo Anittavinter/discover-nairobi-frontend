@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
-import { CategoryFilter } from "@/components/CategoryFilter";
-import { EventCard, type Event } from "@/components/EventCard";
-import { type Category } from "@/components/CategoryBadge";
+import { VibeSection } from "@/components/VibeSection";
+import { WeekendSection } from "@/components/WeekendSection";
+import { EventDetailModal } from "@/components/EventDetailModal";
+import type { Event } from "@/components/EventCard";
 
-// Sample events data
 const sampleEvents: Event[] = [
   {
     id: "1",
     title: "Rooftop Jazz Night at Kilimanjaro",
-    description: "Live jazz under the Nairobi stars",
+    description: "Experience an unforgettable evening of live jazz under the Nairobi stars. Featuring top local and international jazz artists, this rooftop event offers stunning city views, craft cocktails, and an atmosphere that captures the soul of Nairobi's vibrant music scene.",
     category: "Live Music",
     date: new Date(2025, 9, 20),
     time: "19:30",
@@ -22,7 +22,7 @@ const sampleEvents: Event[] = [
   {
     id: "2",
     title: "Sunrise Yoga & Meditation",
-    description: "Start your day with peace and mindfulness",
+    description: "Start your day with peace and mindfulness in the heart of nature. Join us for a rejuvenating morning yoga session followed by guided meditation, surrounded by the serene beauty of Karura Forest.",
     category: "Wellness & Fitness",
     date: new Date(2025, 9, 21),
     time: "07:00",
@@ -34,7 +34,7 @@ const sampleEvents: Event[] = [
   {
     id: "3",
     title: "Tech Innovators Meetup",
-    description: "Connect with Nairobi's tech community",
+    description: "Connect with Nairobi's thriving tech community. Network with developers, founders, and innovators while learning about the latest trends in AI, blockchain, and startup culture in East Africa.",
     category: "Tech & Innovation",
     date: new Date(2025, 9, 22),
     time: "14:00",
@@ -46,7 +46,7 @@ const sampleEvents: Event[] = [
   {
     id: "4",
     title: "International DJ Night: Afro House",
-    description: "Dance till dawn with top international DJs",
+    description: "Dance till dawn with top international DJs spinning the best Afro House beats. This high-energy night features special guest DJs from South Africa, Nigeria, and Europe, bringing global sounds to Nairobi's premier nightlife venue.",
     category: "International DJs",
     date: new Date(2025, 9, 23),
     time: "22:00",
@@ -58,7 +58,7 @@ const sampleEvents: Event[] = [
   {
     id: "5",
     title: "Contemporary Art Exhibition",
-    description: "Showcasing East African artists",
+    description: "Showcasing the finest contemporary art from East African artists. Explore thought-provoking installations, paintings, and sculptures that reflect the dynamic cultural landscape of modern Kenya.",
     category: "Art Exhibitions",
     date: new Date(2025, 9, 24),
     time: "11:00",
@@ -70,7 +70,7 @@ const sampleEvents: Event[] = [
   {
     id: "6",
     title: "Street Food Festival",
-    description: "Taste Nairobi's best street food",
+    description: "Taste Nairobi's best street food all in one place. From nyama choma to samosas, enjoy authentic Kenyan flavors alongside international street food favorites. Live music and family-friendly activities included.",
     category: "Food & Dining",
     date: new Date(2025, 9, 25),
     time: "16:00",
@@ -78,55 +78,56 @@ const sampleEvents: Event[] = [
     neighborhood: "Ruaka",
     imageUrl: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800",
     organizer: { name: "Nairobi Foodies" }
+  },
+  {
+    id: "7",
+    title: "Midnight DJ Set: Amapiano Vibes",
+    description: "The hottest Amapiano DJs from South Africa bring the heat to Nairobi. Experience the infectious beats and dance moves that have taken Africa by storm.",
+    category: "International DJs",
+    date: new Date(2025, 9, 26),
+    time: "23:30",
+    location: "Space Lounge, Westlands",
+    neighborhood: "Westlands",
+    imageUrl: "https://images.unsplash.com/photo-1571266028243-d220c6fa6e70?w=800",
+    organizer: { name: "Space Lounge" }
+  },
+  {
+    id: "8",
+    title: "Morning Run & Coffee",
+    description: "Join our running club for a refreshing 5K through Karura Forest, followed by artisan coffee and healthy breakfast. All fitness levels welcome!",
+    category: "Wellness & Fitness",
+    date: new Date(2025, 9, 27),
+    time: "06:30",
+    location: "Karura Forest Main Gate",
+    neighborhood: "Muthaiga",
+    imageUrl: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800",
+    organizer: { name: "Nairobi Runners Club" }
   }
 ];
 
 export default function Home() {
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const handleCategoryToggle = (category: Category) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
+  const handleEventClick = (event: Event) => {
+    setSelectedEvent(event);
+    setModalOpen(true);
   };
-
-  const filteredEvents = selectedCategories.length === 0
-    ? sampleEvents
-    : sampleEvents.filter(event => selectedCategories.includes(event.category));
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
-      <CategoryFilter 
-        selectedCategories={selectedCategories}
-        onToggle={handleCategoryToggle}
+      <VibeSection />
+      <WeekendSection 
+        events={sampleEvents}
+        onEventClick={handleEventClick}
       />
-      
-      <main className="container mx-auto px-4 py-12">
-        <div className="mb-8">
-          <h2 className="font-display text-3xl font-bold mb-2">
-            {selectedCategories.length === 0 
-              ? "All Events in Nairobi" 
-              : `${selectedCategories.join(", ")} Events`}
-          </h2>
-          <p className="text-muted-foreground">
-            {filteredEvents.length} events found
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEvents.map(event => (
-            <EventCard 
-              key={event.id} 
-              event={event}
-              onClick={() => console.log("Clicked event:", event.id)}
-            />
-          ))}
-        </div>
-      </main>
+      <EventDetailModal 
+        event={selectedEvent}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 }

@@ -11,7 +11,12 @@ export function HeroSection() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-secondary via-primary to-accent">
+    <div 
+      className="relative overflow-hidden"
+      style={{
+        backgroundImage: 'linear-gradient(to bottom right, hsl(var(--secondary)), hsl(var(--primary)), hsl(var(--accent)))'
+      }}
+    >
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1920&auto=format&fit=crop')] bg-cover bg-center opacity-30 mix-blend-overlay" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20" />
       
