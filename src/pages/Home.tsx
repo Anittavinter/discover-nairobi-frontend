@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { VibeSection } from "@/components/VibeSection";
 import { WeekendSection } from "@/components/WeekendSection";
 import { EventDetailModal } from "@/components/EventDetailModal";
+import { Footer } from "@/components/Footer";
 import type { Event } from "@/components/EventCard";
 
 const sampleEvents: Event[] = [
@@ -123,6 +124,7 @@ export default function Home() {
         events={sampleEvents}
         onEventClick={handleEventClick}
       />
+      <Footer />
       <EventDetailModal 
         event={selectedEvent}
         open={modalOpen}

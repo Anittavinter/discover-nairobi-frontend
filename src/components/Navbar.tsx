@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Link } from "wouter";
 
@@ -21,14 +21,16 @@ export function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-2">
+            <Link href="/events">
+              <Button 
+                variant="default"
+                className="gap-2"
+                data-testid="button-browse-events"
+              >
+                Browse Events
+              </Button>
+            </Link>
             <ThemeToggle />
-            <Button 
-              className="gap-2"
-              data-testid="button-add-event"
-            >
-              <Plus className="h-4 w-4" />
-              Add Event
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -44,17 +46,19 @@ export function Navbar() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t py-4 space-y-3">
+            <Link href="/events" className="block">
+              <Button 
+                variant="default"
+                className="w-full gap-2"
+                data-testid="button-browse-events-mobile"
+              >
+                Browse Events
+              </Button>
+            </Link>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Theme</span>
               <ThemeToggle />
             </div>
-            <Button 
-              className="w-full gap-2"
-              data-testid="button-add-event-mobile"
-            >
-              <Plus className="h-4 w-4" />
-              Add Event
-            </Button>
           </div>
         )}
       </div>
