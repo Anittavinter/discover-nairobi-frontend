@@ -9,6 +9,11 @@ import Privacy from "@/pages/Privacy";
 import Events from "@/pages/Events";
 import Categories from "@/pages/Categories";
 import Calendar from "@/pages/Calendar";
+import SignUp from "@/pages/SignUp";
+import Login from "@/pages/Login"; 
+import Booking from "@/pages/Booking";
+import Confirmation from "@/pages/Confirmation";
+import MyTickets from "@/pages/MyTickets";
 import NotFound from "@/pages/NotFound";
 
 export default function App() {
@@ -24,6 +29,11 @@ export default function App() {
         <Route path="/events" component={Events} />
         <Route path="/categories" component={Categories} />
         <Route path="/calendar" component={Calendar} />
+        <Route path="/signup" component={SignUp} /> 
+        <Route path="/login" component={Login} />
+        <Route path="/booking/:eventId" component={Booking} />
+        <Route path="/confirmation/:bookingId" component={Confirmation} />
+        <Route path="/my-tickets" component={MyTickets} />
         <Route component={NotFound} />
       </Switch>
     </ThemeProvider>

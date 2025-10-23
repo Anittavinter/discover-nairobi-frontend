@@ -82,15 +82,15 @@ const sampleEvents: Event[] = [
   },
   {
     id: "7",
-    title: "Midnight DJ Set: Amapiano Vibes",
-    description: "The hottest Amapiano DJs from South Africa bring the heat to Nairobi. Experience the infectious beats and dance moves that have taken Africa by storm.",
-    category: "International DJs",
+    title: "Organic Farmers Market",
+    description: "Fresh organic produce, artisan goods, and local crafts from Karen's best farmers and makers. Support local agriculture while enjoying live music, farm-to-table tastings, and a vibrant community atmosphere.",
+    category: "Community Events",
     date: new Date(2025, 9, 26),
-    time: "23:30",
-    location: "Space Lounge, Westlands",
-    neighborhood: "Westlands",
-    imageUrl: "https://images.unsplash.com/photo-1571266028243-d220c6fa6e70?w=800",
-    organizer: { name: "Space Lounge" }
+    time: "09:00",
+    location: "Karen Country Club",
+    neighborhood: "Karen",
+    imageUrl: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800",
+    organizer: { name: "Karen Farmers Collective" }
   },
   {
     id: "8",
@@ -103,6 +103,18 @@ const sampleEvents: Event[] = [
     neighborhood: "Muthaiga",
     imageUrl: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800",
     organizer: { name: "Nairobi Runners Club" }
+  },
+  {
+    id: "9",
+    title: "Jockey Polo Tournament",
+    description: "Experience the elegance and excitement of polo at Karen's premier equestrian venue. Watch skilled riders and magnificent horses compete in this thrilling sport, followed by champagne reception and social hour.",
+    category: "Sports & Adventure",
+    date: new Date(2025, 9, 28),
+    time: "15:00",
+    location: "Karen Polo Club",
+    neighborhood: "Karen",
+    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
+    organizer: { name: "Karen Polo Club" }
   }
 ];
 

@@ -4,8 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";import { useState } from "react";
-import { Search, MapPin, Calendar, Users, Clock, X } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { Search, MapPin, Calendar, X } from "lucide-react";import { Link } from "wouter";
+
 // Sample event data with vibrant categories
 const SAMPLE_EVENTS = [
   {
@@ -14,12 +16,10 @@ const SAMPLE_EVENTS = [
     category: "Live Music",
     date: "2025-10-25",
     time: "8:00 PM",
-    location: "The Alchemist",
+    venue: "The Alchemist",
     neighborhood: "Westlands",
     price: 1500,
     image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800",
-    attendees: 234,
-    organizer: "Nairobi Nights",
   },
   {
     id: 2,
@@ -27,12 +27,10 @@ const SAMPLE_EVENTS = [
     category: "Wellness & Fitness",
     date: "2025-10-23",
     time: "6:30 AM",
-    location: "Karura Forest",
+    venue: "Karura Forest",
     neighborhood: "Kiambu Road",
     price: 0,
     image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
-    attendees: 45,
-    organizer: "Zen Wellness",
   },
   {
     id: 3,
@@ -40,12 +38,10 @@ const SAMPLE_EVENTS = [
     category: "Tech & Innovation",
     date: "2025-10-24",
     time: "6:00 PM",
-    location: "iHub Nairobi",
+    venue: "iHub Nairobi",
     neighborhood: "CBD",
     price: 500,
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800",
-    attendees: 120,
-    organizer: "Nairobi Tech Community",
   },
   {
     id: 4,
@@ -53,12 +49,10 @@ const SAMPLE_EVENTS = [
     category: "Food & Dining",
     date: "2025-10-26",
     time: "12:00 PM",
-    location: "Karen Gardens",
+    venue: "Karen Gardens",
     neighborhood: "Karen",
     price: 2000,
     image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800",
-    attendees: 567,
-    organizer: "Nairobi Foodies",
   },
   {
     id: 5,
@@ -66,12 +60,10 @@ const SAMPLE_EVENTS = [
     category: "Art Exhibitions",
     date: "2025-10-27",
     time: "10:00 AM",
-    location: "Nairobi Gallery",
+    venue: "Nairobi Gallery",
     neighborhood: "Lavington",
     price: 800,
     image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800",
-    attendees: 89,
-    organizer: "Art Collective KE",
   },
   {
     id: 6,
@@ -79,12 +71,10 @@ const SAMPLE_EVENTS = [
     category: "Open Mics",
     date: "2025-10-25",
     time: "7:30 PM",
-    location: "Churchill's Pub",
+    venue: "Churchill's Pub",
     neighborhood: "Westlands",
     price: 500,
     image: "https://images.unsplash.com/photo-1585699324551-f6c309eedeca?w=800",
-    attendees: 145,
-    organizer: "Laugh Factory KE",
   },
   {
     id: 7,
@@ -92,12 +82,10 @@ const SAMPLE_EVENTS = [
     category: "Workshops",
     date: "2025-10-28",
     time: "3:00 PM",
-    location: "Dance Studio 254",
+    venue: "Dance Studio 254",
     neighborhood: "Kilimani",
     price: 1000,
     image: "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=800",
-    attendees: 32,
-    organizer: "Move254",
   },
   {
     id: 8,
@@ -105,12 +93,10 @@ const SAMPLE_EVENTS = [
     category: "Community Events",
     date: "2025-10-26",
     time: "5:00 PM",
-    location: "Sky Lounge",
+    venue: "Sky Lounge",
     neighborhood: "Parklands",
     price: 1200,
     image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
-    attendees: 178,
-    organizer: "Social Nairobi",
   },
 ];
 
@@ -164,13 +150,21 @@ function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
     "Community Events": "hsl(var(--accent))",
   };
 
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-US', { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
   return (
     <Card 
       className="overflow-hidden hover-elevate cursor-pointer group"
       data-testid={`card-event-${event.id}`}
     >
-      {/* Event Image */}
-      <div className="relative h-48 overflow-hidden bg-muted">
+      {/* Event Image - BIGGER */}
+      <div className="relative h-56 overflow-hidden bg-muted">
         <img 
           src={event.image} 
           alt={event.title}
@@ -178,7 +172,7 @@ function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
         />
         <div className="absolute top-3 right-3">
           <Badge 
-            className="shadow-lg"
+            className="text-xs shadow-lg"
             style={{ 
               backgroundColor: categoryColors[event.category] || "hsl(var(--primary))",
               color: "white"
@@ -189,44 +183,47 @@ function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
         </div>
         {event.price === 0 && (
           <div className="absolute top-3 left-3">
-            <Badge className="bg-chart-2 text-white shadow-lg">FREE</Badge>
+            <Badge className="bg-chart-2 text-white shadow-lg text-xs">FREE</Badge>
           </div>
         )}
       </div>
 
-      {/* Event Details */}
-      <div className="p-4 space-y-3">
-        <h3 className="font-bold text-lg line-clamp-2" data-testid={`text-event-title-${event.id}`}>
+      {/* Event Details - MORE PADDING */}
+      <div className="p-6 space-y-4">
+        {/* Title - LARGER */}
+        <h3 className="font-bold text-xl line-clamp-2 leading-tight" data-testid={`text-event-title-${event.id}`}>
           {event.title}
         </h3>
 
-        <div className="space-y-2 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 flex-shrink-0" />
-            <span>{new Date(event.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-            <Clock className="w-4 h-4 flex-shrink-0 ml-2" />
-            <span>{event.time}</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">{event.location}, {event.neighborhood}</span>
-          </div>
-
-          <div className="flex items-center justify-between pt-2 border-t">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              <span className="text-xs">{event.attendees} going</span>
-            </div>
-            <div className="font-bold text-foreground">
-              {event.price === 0 ? "FREE" : `KES ${event.price.toLocaleString()}`}
-            </div>
-          </div>
+        {/* Date + Time COMBINED */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Calendar className="w-4 h-4 flex-shrink-0" />
+          <span>{formatDate(event.date)} • {event.time}</span>
         </div>
 
-        <Button className="w-full" data-testid={`button-book-${event.id}`}>
-          Book Now
-        </Button>
+        {/* Venue - SIMPLIFIED */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <MapPin className="w-4 h-4 flex-shrink-0" />
+          <span className="truncate">{event.venue}</span>
+        </div>
+
+        {/* Price + Button - PROMINENT */}
+        <div className="flex items-center justify-between pt-3 border-t">
+          <div className="font-bold text-lg text-foreground">
+            {event.price === 0 ? "FREE" : `KES ${event.price.toLocaleString()}`}
+          </div>
+          <Link 
+  href="/login"
+  onClick={() => {
+    // Save event ID for after login
+    localStorage.setItem('pendingBooking', event.id.toString());
+  }}
+>
+  <Button size="sm" data-testid={`button-book-${event.id}`}>
+    Book Now
+  </Button>
+</Link>
+        </div>
       </div>
     </Card>
   );
@@ -243,7 +240,7 @@ export default function Events() {
   const filteredEvents = SAMPLE_EVENTS.filter((event) => {
     // Search filter
     if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !event.location.toLowerCase().includes(searchQuery.toLowerCase())) {
+        !event.venue.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
 
@@ -300,7 +297,7 @@ export default function Events() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search events by name or location..."
+                placeholder="Search events by name or venue..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 pr-4 h-12 text-base bg-white"
@@ -387,9 +384,9 @@ export default function Events() {
               )}
             </div>
 
-            {/* Events Grid */}
+            {/* Events Grid - MORE SPACING */}
             {filteredEvents.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredEvents.map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))}

@@ -71,10 +71,22 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button className="flex-1" data-testid="button-get-tickets">
-              Get Tickets
+            <Button 
+              className="flex-1" 
+              onClick={() => {
+                localStorage.setItem('pendingBooking', event.id);
+                window.location.href = "/login";
+              }}
+              data-testid="button-get-tickets"
+            >
+              Book Now
             </Button>
-            <Button variant="outline" className="flex-1" data-testid="button-share">
+            <Button 
+              variant="outline" 
+              className="flex-1" 
+              onClick={() => alert("Share feature coming soon!")}
+              data-testid="button-share"
+            >
               Share Event
             </Button>
           </div>

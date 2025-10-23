@@ -1,10 +1,65 @@
 import { Link } from "wouter";
-import { Instagram, Github } from "lucide-react";
+import { Instagram, Github, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Connect to backend API
+    setSubscribed(true);
+    setTimeout(() => {
+      setEmail("");
+      setSubscribed(false);
+    }, 3000);
+  };
+
   return (
     <footer className="border-t bg-card/50 backdrop-blur mt-24">
       <div className="container mx-auto px-4 py-12">
+        {/* Newsletter Section */}
+        <div 
+          className="mb-12 p-8 rounded-lg relative overflow-hidden"
+          style={{
+            backgroundImage: 'linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--secondary) / 0.1) 100%)',
+          }}
+        >
+          <div className="max-w-2xl mx-auto text-center relative z-10">
+            <Mail className="w-12 h-12 mx-auto mb-4 text-primary" />
+            <h3 className="text-2xl font-bold mb-2">Stay in the Loop</h3>
+            <p className="text-muted-foreground mb-6">
+              Get weekly event highlights delivered every Sunday at 9am. Join 500+ Nairobians who never miss out.
+            </p>
+            
+            {subscribed ? (
+              <div className="text-center py-4">
+                <p className="text-primary font-semibold">
+                  🎉 You're in! Check your email for confirmation.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="flex-1"
+                  data-testid="input-newsletter-email"
+                />
+                <Button type="submit" data-testid="button-newsletter-subscribe">
+                  Subscribe
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
           <div className="space-y-4">

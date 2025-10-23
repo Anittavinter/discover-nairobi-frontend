@@ -13,7 +13,8 @@ export type Category =
   | "Community Events"
   | "Workshops"
   | "Film Screenings"
-  | "International DJs";
+  | "International DJs"
+  | "Sports & Adventure";
 
 export const categoryIcons: Record<Category, string> = {
   "Live Music": "🎭",
@@ -28,6 +29,7 @@ export const categoryIcons: Record<Category, string> = {
   "Workshops": "📚",
   "Film Screenings": "🎬",
   "International DJs": "🎵",
+  "Sports & Adventure": "🏇",
 };
 
 interface CategoryBadgeProps {
@@ -42,7 +44,7 @@ export function CategoryBadge({ category, selected = false, onClick, className }
     <Badge
       variant={selected ? "default" : "secondary"}
       className={cn(
-        "cursor-pointer gap-1.5 text-sm hover-elevate active-elevate-2 font-medium",
+        "cursor-pointer gap-2 text-xs hover-elevate active-elevate-2 font-medium whitespace-nowrap",
         selected && "bg-primary text-primary-foreground border-primary",
         !selected && "bg-secondary/10 text-secondary border-secondary/30",
         className
@@ -50,7 +52,7 @@ export function CategoryBadge({ category, selected = false, onClick, className }
       onClick={onClick}
       data-testid={`badge-category-${category.toLowerCase().replace(/\s+/g, "-")}`}
     >
-      <span>{categoryIcons[category]}</span>
+      {category !== "International DJs" && <span>{categoryIcons[category]}</span>}
       <span>{category}</span>
     </Badge>
   );
