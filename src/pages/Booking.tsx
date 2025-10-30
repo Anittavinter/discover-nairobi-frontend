@@ -18,6 +18,26 @@ const sampleEvents = [
     price: 2500,
   },
   {
+    id: "2",
+    title: "Sunrise Yoga & Meditation",
+    date: new Date(2025, 9, 21),
+    time: "07:00",
+    location: "Karura Forest, Muthaiga",
+    neighborhood: "Muthaiga",
+    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
+    price: 1000,
+  },
+  {
+    id: "3",
+    title: "Tech Innovators Meetup",
+    date: new Date(2025, 9, 22),
+    time: "14:00",
+    location: "iHub, Ngong Road",
+    neighborhood: "Kilimani",
+    imageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800",
+    price: 0,
+  },
+  {
     id: "4",
     title: "International DJ Night: Afro House",
     date: new Date(2025, 9, 23),
@@ -28,6 +48,26 @@ const sampleEvents = [
     price: 3000,
   },
   {
+    id: "5",
+    title: "Contemporary Art Exhibition",
+    date: new Date(2025, 9, 24),
+    time: "11:00",
+    location: "Circle Art Gallery, Karen",
+    neighborhood: "Karen",
+    imageUrl: "https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?w=800",
+    price: 800,
+  },
+  {
+    id: "6",
+    title: "Street Food Festival",
+    date: new Date(2025, 9, 25),
+    time: "16:00",
+    location: "Two Rivers Mall, Ruaka",
+    neighborhood: "Ruaka",
+    imageUrl: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800",
+    price: 1500,
+  },
+  {
     id: "7",
     title: "Organic Farmers Market",
     date: new Date(2025, 9, 26),
@@ -35,6 +75,16 @@ const sampleEvents = [
     location: "Karen Country Club",
     neighborhood: "Karen",
     imageUrl: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800",
+    price: 500,
+  },
+  {
+    id: "8",
+    title: "Morning Run & Coffee",
+    date: new Date(2025, 9, 27),
+    time: "06:30",
+    location: "Karura Forest Main Gate",
+    neighborhood: "Muthaiga",
+    imageUrl: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800",
     price: 500,
   },
   {
@@ -124,7 +174,11 @@ export default function Booking() {
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <p className="font-semibold">General Admission</p>
-                      <p className="text-sm text-muted-foreground">KSh {event.price.toLocaleString()}</p>
+                      {event.price === 0 ? (
+                        <p className="text-sm text-green-600 dark:text-green-400 font-semibold">FREE</p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">KSh {event.price.toLocaleString()}</p>
+                      )}
                     </div>
                     <div className="flex items-center gap-3">
                       <Button
@@ -151,29 +205,39 @@ export default function Booking() {
                   <div className="border-t pt-4">
                     <div className="flex justify-between text-lg font-bold mb-4">
                       <span>Total</span>
-                      <span>KSh {total.toLocaleString()}</span>
+                      {event.price === 0 ? (
+                        <span className="text-green-600 dark:text-green-400">FREE</span>
+                      ) : (
+                        <span>KSh {total.toLocaleString()}</span>
+                      )}
                     </div>
 
                     <Button 
-  className="w-full" 
-  size="lg"
-  onClick={() => {
-    // Simulate M-PESA payment
-    alert(`Processing M-PESA payment...\nTotal: KSh ${total.toLocaleString()}\n\nCheck your phone for STK push!`);
-    
-    // Simulate successful payment after 2 seconds
-    setTimeout(() => {
-      window.location.href = `/confirmation/${eventId}`;
-    }, 2000);
-  }}
-  data-testid="button-proceed-payment"
->
-  Pay with M-PESA - KSh {total.toLocaleString()}
-</Button>
+                      className="w-full" 
+                      size="lg"
+                      onClick={() => {
+                        if (event.price === 0) {
+                          // Free event - skip payment
+                          alert("Booking confirmed! Redirecting to confirmation...");
+                          setTimeout(() => {
+                            window.location.href = `/confirmation/${eventId}`;
+                          }, 1000);
+                        } else {
+                          // Paid event - simulate M-PESA payment
+                          alert(`Processing M-PESA payment...\nTotal: KSh ${total.toLocaleString()}\n\nCheck your phone for STK push!`);
+                          setTimeout(() => {
+                            window.location.href = `/confirmation/${eventId}`;
+                          }, 2000);
+                        }
+                      }}
+                      data-testid="button-proceed-payment"
+                    >
+                      {event.price === 0 ? "Confirm Free Booking" : `Pay with M-PESA - KSh ${total.toLocaleString()}`}
+                    </Button>
                   </div>
 
                   <p className="text-xs text-center text-muted-foreground">
-                    🔒 Secure payment with M-PESA
+                    🔒 {event.price === 0 ? "Free event - No payment required" : "Secure payment with M-PESA"}
                   </p>
                 </div>
               </Card>
