@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Link, useLocation } from "wouter";
 
@@ -43,7 +43,17 @@ export function Navbar() {
               </Link>
             ))}
             
-            <div className="ml-2 pl-2 border-l">
+            <div className="ml-2 pl-2 border-l flex items-center gap-1">
+              <Link href="/profile">
+                <Button
+                  variant={location === "/profile" ? "default" : "ghost"}
+                  size="sm"
+                  data-testid="button-nav-profile"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </Link>
               <ThemeToggle />
             </div>
           </div>
@@ -73,6 +83,18 @@ export function Navbar() {
                 </Button>
               </Link>
             ))}
+            
+            <Link href="/profile" className="block">
+              <Button
+                variant={location === "/profile" ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="button-nav-mobile-profile"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Profile
+              </Button>
+            </Link>
             
             <div className="flex items-center justify-between pt-2 px-2 border-t">
               <span className="text-sm font-medium">Theme</span>

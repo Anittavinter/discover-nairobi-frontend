@@ -15,6 +15,8 @@ import Booking from "@/pages/Booking";
 import Confirmation from "@/pages/Confirmation";
 import MyTickets from "@/pages/MyTickets";
 import NotFound from "@/pages/NotFound";
+import Refund from "@/pages/Refund";
+import Profile from "@/pages/Profile";
 
 export default function App() {
   return (
@@ -34,6 +36,8 @@ export default function App() {
         <Route path="/booking/:eventId" component={Booking} />
         <Route path="/confirmation/:bookingId" component={Confirmation} />
         <Route path="/my-tickets" component={MyTickets} />
+        <Route path="/refund" component={Refund} />
+        <Route path="/profile" component={Profile} />
         <Route component={NotFound} />
       </Switch>
     </ThemeProvider>

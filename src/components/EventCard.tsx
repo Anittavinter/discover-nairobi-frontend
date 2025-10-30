@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Calendar } from "lucide-react";
+import { MapPin, Clock, Calendar, Heart } from "lucide-react";
 import { CategoryBadge, type Category } from "./CategoryBadge";
 import { format } from "date-fns";
 
@@ -23,15 +23,22 @@ export interface Event {
 interface EventCardProps {
   event: Event;
   onClick?: () => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (eventId: string) => void;
 }
 
-export function EventCard({ event, onClick }: EventCardProps) {
+export function EventCard({ event, onClick, isFavorite = false, onToggleFavorite }: EventCardProps) {
   const getGradient = () => {
     const hour = parseInt(event.time.split(":")[0]);
     if (hour < 12) return "from-chart-4 to-accent";
     if (hour < 17) return "from-accent to-primary";
     if (hour < 21) return "from-primary to-chart-5";
     return "from-secondary to-primary";
+  };
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    onToggleFavorite?.(event.id);
   };
 
   return (
@@ -51,11 +58,27 @@ export function EventCard({ event, onClick }: EventCardProps) {
         <div className="absolute top-3 left-3">
           <CategoryBadge category={event.category} className="bg-background/90 backdrop-blur-sm" />
         </div>
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3 flex gap-2">
           <Badge className="bg-white/90 backdrop-blur-sm text-foreground border-0">
             <Clock className="w-3 h-3 mr-1" />
             {event.time}
           </Badge>
+          {/* Favorite Heart Icon */}
+          {onToggleFavorite && (
+            <button
+              onClick={handleFavoriteClick}
+              className="bg-white/90 backdrop-blur-sm rounded-full p-2 hover-elevate active-elevate-2 transition-all"
+              data-testid={`button-favorite-${event.id}`}
+            >
+              <Heart 
+                className={`w-4 h-4 transition-colors ${
+                  isFavorite 
+                    ? 'fill-red-500 text-red-500' 
+                    : 'text-muted-foreground'
+                }`}
+              />
+            </button>
+          )}
         </div>
         <div className="absolute bottom-3 left-3 right-3">
           <h3 className="font-display font-bold text-lg text-white drop-shadow-lg line-clamp-2">

@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
-import { Search, MapPin, Calendar, X } from "lucide-react";import { Link } from "wouter";
+import { useState, useEffect } from "react";
+import { Search, MapPin, Calendar, X } from "lucide-react";
+import { Link } from "wouter";
 
 // Sample event data with vibrant categories
 const SAMPLE_EVENTS = [
@@ -163,7 +164,7 @@ function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
       className="overflow-hidden hover-elevate cursor-pointer group"
       data-testid={`card-event-${event.id}`}
     >
-      {/* Event Image - BIGGER */}
+      {/* Event Image */}
       <div className="relative h-56 overflow-hidden bg-muted">
         <img 
           src={event.image} 
@@ -188,41 +189,40 @@ function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
         )}
       </div>
 
-      {/* Event Details - MORE PADDING */}
+      {/* Event Details */}
       <div className="p-6 space-y-4">
-        {/* Title - LARGER */}
+        {/* Title */}
         <h3 className="font-bold text-xl line-clamp-2 leading-tight" data-testid={`text-event-title-${event.id}`}>
           {event.title}
         </h3>
 
-        {/* Date + Time COMBINED */}
+        {/* Date + Time */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="w-4 h-4 flex-shrink-0" />
           <span>{formatDate(event.date)} • {event.time}</span>
         </div>
 
-        {/* Venue - SIMPLIFIED */}
+        {/* Venue */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="w-4 h-4 flex-shrink-0" />
           <span className="truncate">{event.venue}</span>
         </div>
 
-        {/* Price + Button - PROMINENT */}
+        {/* Price + Button */}
         <div className="flex items-center justify-between pt-3 border-t">
           <div className="font-bold text-lg text-foreground">
             {event.price === 0 ? "FREE" : `KES ${event.price.toLocaleString()}`}
           </div>
           <Link 
-  href="/login"
-  onClick={() => {
-    // Save event ID for after login
-    localStorage.setItem('pendingBooking', event.id.toString());
-  }}
->
-  <Button size="sm" data-testid={`button-book-${event.id}`}>
-    Book Now
-  </Button>
-</Link>
+            href="/login"
+            onClick={() => {
+              localStorage.setItem('pendingBooking', event.id.toString());
+            }}
+          >
+            <Button size="sm" data-testid={`button-book-${event.id}`}>
+              Book Now
+            </Button>
+          </Link>
         </div>
       </div>
     </Card>
@@ -235,6 +235,15 @@ export default function Events() {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("All Areas");
   const [selectedPriceRange, setSelectedPriceRange] = useState(PRICE_RANGES[0]);
   const [viewMode, setViewMode] = useState<"all" | "upcoming" | "free">("all");
+
+  // Read search query from URL on page load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get('search');
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    }
+  }, []);
 
   // Filter events
   const filteredEvents = SAMPLE_EVENTS.filter((event) => {
@@ -384,33 +393,30 @@ export default function Events() {
               )}
             </div>
 
-            {/* Events Grid - MORE SPACING */}
-            {filteredEvents.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredEvents.map((event) => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </div>
-            ) : (
+            {/* Events Grid */}
+            {filteredEvents.length === 0 ? (
               <div className="text-center py-16">
-                <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
-                  <Search className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">No events found</h3>
-                <p className="text-muted-foreground mb-6">
-                  Try adjusting your filters or search query
-                </p>
+                <p className="text-xl text-muted-foreground mb-4">No events found</p>
+                <p className="text-sm text-muted-foreground mb-6">Try adjusting your filters or search query</p>
                 <Button
+                  variant="outline"
                   onClick={() => {
                     setSearchQuery("");
                     setSelectedCategory("All Categories");
                     setSelectedNeighborhood("All Areas");
                     setSelectedPriceRange(PRICE_RANGES[0]);
+                    setViewMode("all");
                   }}
                   data-testid="button-reset-all"
                 >
                   Reset All Filters
                 </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredEvents.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
               </div>
             )}
           </div>

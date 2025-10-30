@@ -5,6 +5,7 @@ import { VibeSection } from "@/components/VibeSection";
 import { WeekendSection } from "@/components/WeekendSection";
 import { EventDetailModal } from "@/components/EventDetailModal";
 import { Footer } from "@/components/Footer";
+import { useFavorites } from "@/hooks/useFavorites";
 import type { Event } from "@/components/EventCard";
 
 const sampleEvents: Event[] = [
@@ -121,6 +122,7 @@ const sampleEvents: Event[] = [
 export default function Home() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleEventClick = (event: Event) => {
     setSelectedEvent(event);
@@ -135,6 +137,8 @@ export default function Home() {
       <WeekendSection 
         events={sampleEvents}
         onEventClick={handleEventClick}
+        isFavorite={isFavorite}
+        onToggleFavorite={toggleFavorite}
       />
       <Footer />
       <EventDetailModal 

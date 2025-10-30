@@ -14,9 +14,11 @@ const timeSlots = [
 interface WeekendSectionProps {
   events: Event[];
   onEventClick: (event: Event) => void;
+  isFavorite?: (eventId: string) => boolean;
+  onToggleFavorite?: (eventId: string) => void;
 }
 
-export function WeekendSection({ events, onEventClick }: WeekendSectionProps) {
+export function WeekendSection({ events, onEventClick, isFavorite, onToggleFavorite }: WeekendSectionProps) {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("all");
 
   const filteredEvents = events.filter(event => {
@@ -65,6 +67,8 @@ export function WeekendSection({ events, onEventClick }: WeekendSectionProps) {
                 key={event.id}
                 event={event}
                 onClick={() => onEventClick(event)}
+                isFavorite={isFavorite?.(event.id)}
+                onToggleFavorite={onToggleFavorite}
               />
             ))}
           </div>

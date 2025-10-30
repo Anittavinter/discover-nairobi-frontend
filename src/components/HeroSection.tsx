@@ -1,13 +1,25 @@
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { useLocation } from "wouter";
 
 export function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [, setLocation] = useLocation();
 
   const handleSearch = () => {
-    console.log("Search triggered:", searchQuery);
+    if (searchQuery.trim()) {
+      setLocation(`/events?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      setLocation('/events');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -38,7 +50,7 @@ export function HeroSection() {
                 className="pl-10 bg-white/95 backdrop-blur"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                onKeyDown={handleKeyPress}
                 data-testid="input-search"
               />
             </div>
