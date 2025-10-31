@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { useRoute } from "wouter";
 import { useState } from "react";
 import { MapPin, Calendar, Clock, Minus, Plus } from "lucide-react";
+import { MpesaPaymentModal } from "@/components/MpesaPaymentModal";
+import { saveBooking, generateConfirmationCode } from "@/lib/bookings";
 
 const sampleEvents = [
   {
@@ -105,6 +107,7 @@ export default function Booking() {
   
   const event = sampleEvents.find(e => e.id === eventId);
   const [quantity, setQuantity] = useState(1);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   if (!event) {
     return (
@@ -126,6 +129,38 @@ export default function Booking() {
 
   const total = event.price * quantity;
 
+  const handlePaymentSuccess = () => {
+    const bookingId = `BK${Date.now()}`;
+    const confirmationCode = generateConfirmationCode();
+    
+    saveBooking({
+      id: bookingId,
+      eventId: event.id,
+      eventTitle: event.title,
+      eventDate: event.date,
+      eventTime: event.time,
+      location: event.location,
+      neighborhood: event.neighborhood,
+      imageUrl: event.imageUrl,
+      ticketQuantity: quantity,
+      totalAmount: total,
+      confirmationCode,
+      paymentMethod: event.price === 0 ? "Free Event" : "M-PESA",
+      bookingDate: new Date(),
+      status: "confirmed",
+    });
+
+    window.location.href = `/confirmation/${bookingId}`;
+  };
+
+  const handleProceed = () => {
+    if (event.price === 0) {
+      handlePaymentSuccess();
+    } else {
+      setShowPaymentModal(true);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
@@ -135,7 +170,6 @@ export default function Booking() {
           <h1 className="text-4xl font-bold mb-8">Book Your Tickets</h1>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Event Details */}
             <div>
               <Card className="overflow-hidden">
                 <img 
@@ -164,13 +198,11 @@ export default function Booking() {
               </Card>
             </div>
 
-            {/* Booking Form */}
             <div className="space-y-6">
               <Card className="p-6">
                 <h3 className="text-xl font-bold mb-4">Select Tickets</h3>
                 
                 <div className="space-y-4">
-                  {/* Ticket Quantity */}
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <p className="font-semibold">General Admission</p>
@@ -201,7 +233,6 @@ export default function Booking() {
                     </div>
                   </div>
 
-                  {/* Total */}
                   <div className="border-t pt-4">
                     <div className="flex justify-between text-lg font-bold mb-4">
                       <span>Total</span>
@@ -215,21 +246,7 @@ export default function Booking() {
                     <Button 
                       className="w-full" 
                       size="lg"
-                      onClick={() => {
-                        if (event.price === 0) {
-                          // Free event - skip payment
-                          alert("Booking confirmed! Redirecting to confirmation...");
-                          setTimeout(() => {
-                            window.location.href = `/confirmation/${eventId}`;
-                          }, 1000);
-                        } else {
-                          // Paid event - simulate M-PESA payment
-                          alert(`Processing M-PESA payment...\nTotal: KSh ${total.toLocaleString()}\n\nCheck your phone for STK push!`);
-                          setTimeout(() => {
-                            window.location.href = `/confirmation/${eventId}`;
-                          }, 2000);
-                        }
-                      }}
+                      onClick={handleProceed}
                       data-testid="button-proceed-payment"
                     >
                       {event.price === 0 ? "Confirm Free Booking" : `Pay with M-PESA - KSh ${total.toLocaleString()}`}
@@ -247,6 +264,14 @@ export default function Booking() {
       </main>
 
       <Footer />
+
+      <MpesaPaymentModal
+        open={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        amount={total}
+        eventTitle={event.title}
+        onSuccess={handlePaymentSuccess}
+      />
     </div>
   );
 }

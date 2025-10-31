@@ -3,31 +3,43 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRoute } from "wouter";
-import { CheckCircle, Calendar, Download, Mail, MapPin, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { CheckCircle, Calendar, Download, MapPin, Clock } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { getBookingById, type Booking } from "@/lib/bookings";
 
 export default function Confirmation() {
   const [, params] = useRoute("/confirmation/:bookingId");
   const bookingId = params?.bookingId;
+  const [booking, setBooking] = useState<Booking | null>(null);
 
-  // In real app, fetch booking details from backend
-  const booking = {
-    id: bookingId,
-    eventTitle: "International DJ Night: Afro House",
-    eventDate: "Thu, Oct 23",
-    eventTime: "22:00",
-    location: "Alchemist Bar, Westlands",
-    ticketQuantity: 2,
-    totalPaid: 6000,
-    email: "anittavinter@gmail.com",
-    phone: "+254 XXX XXX XXX",
-    confirmationCode: `DN-${bookingId?.toUpperCase()}`,
-    imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800",
-    // Calendar details
-    dateStart: new Date(2025, 9, 23, 22, 0), // Oct 23, 2025 at 10:00 PM
-    dateEnd: new Date(2025, 9, 24, 3, 0),    // Oct 24, 2025 at 3:00 AM
-  };
+  useEffect(() => {
+    if (bookingId) {
+      const found = getBookingById(bookingId);
+      setBooking(found);
+    }
+  }, [bookingId]);
 
-  // Download ticket as text file
+  if (!booking) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold mb-4">Booking Not Found</h1>
+            <p className="text-muted-foreground mb-6">
+              The booking you're looking for doesn't exist.
+            </p>
+            <Button onClick={() => (window.location.href = "/events")}>
+              Browse Events
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   const handleDownloadTicket = () => {
     const ticketContent = `
 ╔════════════════════════════════════════════════╗
@@ -36,7 +48,7 @@ export default function Confirmation() {
 
 EVENT: ${booking.eventTitle}
 
-📅 DATE:     ${booking.eventDate}
+📅 DATE:     ${booking.eventDate.toLocaleDateString()}
 ⏰ TIME:     ${booking.eventTime}
 📍 VENUE:    ${booking.location}
 
@@ -46,12 +58,7 @@ BOOKING DETAILS
 ────────────────────────────────────────────────
 Confirmation Code:  ${booking.confirmationCode}
 Tickets:           ${booking.ticketQuantity}x General Admission
-Total Paid:        KSh ${booking.totalPaid.toLocaleString()}
-
-CONTACT INFORMATION
-────────────────────────────────────────────────
-Email:  ${booking.email}
-Phone:  ${booking.phone}
+Total Paid:        KSh ${booking.totalAmount.toLocaleString()}
 
 ════════════════════════════════════════════════
 
@@ -76,28 +83,25 @@ Phone:  ${booking.phone}
     URL.revokeObjectURL(url);
   };
 
-  // Add to calendar (creates .ics file)
   const handleAddToCalendar = () => {
     const formatDate = (date: Date) => {
       return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
     };
+
+    const startDate = new Date(booking.eventDate);
+    const endDate = new Date(startDate.getTime() + 4 * 60 * 60 * 1000);
 
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'PRODID:-//Discover Nairobi//Event Booking//EN',
       'BEGIN:VEVENT',
-      `DTSTART:${formatDate(booking.dateStart)}`,
-      `DTEND:${formatDate(booking.dateEnd)}`,
+      `DTSTART:${formatDate(startDate)}`,
+      `DTEND:${formatDate(endDate)}`,
       `SUMMARY:${booking.eventTitle}`,
-      `DESCRIPTION:Confirmation Code: ${booking.confirmationCode}\\nTickets: ${booking.ticketQuantity}x General Admission\\n\\nPresent your confirmation code at the entrance.`,
+      `DESCRIPTION:Confirmation Code: ${booking.confirmationCode}\\nTickets: ${booking.ticketQuantity}x General Admission`,
       `LOCATION:${booking.location}`,
       `STATUS:CONFIRMED`,
-      `BEGIN:VALARM`,
-      `TRIGGER:-PT2H`,
-      `DESCRIPTION:Event reminder - ${booking.eventTitle} starts in 2 hours!`,
-      `ACTION:DISPLAY`,
-      `END:VALARM`,
       'END:VEVENT',
       'END:VCALENDAR'
     ].join('\r\n');
@@ -119,7 +123,6 @@ Phone:  ${booking.phone}
       
       <main className="flex-1 py-12 px-4">
         <div className="container mx-auto max-w-3xl">
-          {/* Success Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/20 mb-4">
               <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
@@ -130,10 +133,8 @@ Phone:  ${booking.phone}
             </p>
           </div>
 
-          {/* Booking Details Card */}
           <Card className="p-6 mb-6">
             <div className="space-y-6">
-              {/* Event Header */}
               <div className="flex gap-4">
                 <img 
                   src={booking.imageUrl} 
@@ -145,7 +146,7 @@ Phone:  ${booking.phone}
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
-                      <span>{booking.eventDate}</span>
+                      <span>{booking.eventDate.toLocaleDateString()}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4" />
@@ -161,7 +162,6 @@ Phone:  ${booking.phone}
 
               <div className="border-t pt-4">
                 <div className="grid md:grid-cols-2 gap-4">
-                  {/* Booking Info */}
                   <div>
                     <h3 className="font-semibold mb-3">Booking Details</h3>
                     <div className="space-y-2 text-sm">
@@ -175,31 +175,31 @@ Phone:  ${booking.phone}
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Total Paid:</span>
-                        <span className="font-semibold">KSh {booking.totalPaid.toLocaleString()}</span>
+                        <span className="font-semibold">KSh {booking.totalAmount.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Payment:</span>
+                        <span className="font-semibold">{booking.paymentMethod}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Contact Info */}
-                  <div>
-                    <h3 className="font-semibold mb-3">Sent To</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-muted-foreground" />
-                        <span>{booking.email}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-4 h-4 text-muted-foreground">📱</span>
-                        <span>{booking.phone}</span>
-                      </div>
-                    </div>
+                  <div className="flex flex-col items-center justify-center bg-white p-4 rounded-lg">
+                    <QRCodeSVG
+                      value={booking.confirmationCode}
+                      size={150}
+                      level="H"
+                      data-testid="qr-code"
+                    />
+                    <p className="text-xs text-gray-600 mt-2">
+                      Scan at venue entrance
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Actions */}
           <div className="grid md:grid-cols-3 gap-3 mb-6">
             <Button 
               variant="outline" 
@@ -228,12 +228,11 @@ Phone:  ${booking.phone}
             </Button>
           </div>
 
-          {/* Info Card */}
           <Card className="p-4 bg-muted/50">
             <p className="text-sm text-center text-muted-foreground">
-              📧 A confirmation email has been sent to <strong>{booking.email}</strong>
+              💡 Show this QR code at the event entrance for quick check-in
               <br />
-              💡 Show this confirmation code at the event entrance
+              📱 Save this page or download your ticket for easy access
             </p>
           </Card>
         </div>
