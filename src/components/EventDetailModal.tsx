@@ -6,10 +6,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, MapPin, User } from "lucide-react";
+import { Calendar, Clock, MapPin, User, Share2, Navigation, CalendarPlus, Check } from "lucide-react";
 import { CategoryBadge } from "./CategoryBadge";
 import { type Event } from "./EventCard";
 import { format } from "date-fns";
+import { useState } from "react";
+import { SiWhatsapp, SiX } from "react-icons/si";
 
 interface EventDetailModalProps {
   event: Event | null;
@@ -18,7 +20,52 @@ interface EventDetailModalProps {
 }
 
 export function EventDetailModal({ event, open, onClose }: EventDetailModalProps) {
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   if (!event) return null;
+
+  const eventUrl = `${window.location.origin}/events?id=${event.id}`;
+  const eventDescription = encodeURIComponent(`${event.title} - ${format(event.date, "MMM d")} at ${event.time}`);
+  
+  // Share URLs
+  const whatsappUrl = `https://wa.me/?text=${eventDescription}%20${encodeURIComponent(eventUrl)}`;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${eventDescription}&url=${encodeURIComponent(eventUrl)}`;
+  
+  // Google Maps URL
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`;
+
+  // Add to Google Calendar
+  const calendarUrl = (() => {
+    const startDate = format(event.date, "yyyyMMdd");
+    const timeStr = event.time.replace(/[:\s]/g, '');
+    const title = encodeURIComponent(event.title);
+    const location = encodeURIComponent(event.location);
+    const details = encodeURIComponent(event.description);
+    
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}T${timeStr}00/${startDate}T${timeStr}00&details=${details}&location=${location}`;
+  })();
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(eventUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  const handleShare = (platform: 'whatsapp' | 'twitter' | 'copy') => {
+    if (platform === 'copy') {
+      handleCopyLink();
+    } else if (platform === 'whatsapp') {
+      window.open(whatsappUrl, '_blank');
+    } else if (platform === 'twitter') {
+      window.open(twitterUrl, '_blank');
+    }
+    setShowShareMenu(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -39,7 +86,9 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
         </div>
 
         <DialogHeader>
-          <DialogTitle className="font-display text-3xl">{event.title}</DialogTitle>
+          <DialogTitle className="font-display text-3xl" data-testid="text-event-detail-title">
+            {event.title}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -70,9 +119,10 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
             <p className="text-muted-foreground">{event.description}</p>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 pt-4">
             <Button 
-              className="flex-1" 
+              className="flex-1 min-w-[200px]" 
               onClick={() => {
                 localStorage.setItem('pendingBooking', event.id);
                 window.location.href = "/login";
@@ -81,14 +131,95 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
             >
               Book Now
             </Button>
-            <Button 
-              variant="outline" 
-              className="flex-1" 
-              onClick={() => alert("Share feature coming soon!")}
-              data-testid="button-share"
-            >
-              Share Event
-            </Button>
+            
+            <div className="flex gap-2 flex-1 min-w-[200px]">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => window.open(mapsUrl, '_blank')}
+                data-testid="button-directions"
+              >
+                <Navigation className="h-4 w-4 mr-2" />
+                Directions
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => window.open(calendarUrl, '_blank')}
+                data-testid="button-add-calendar"
+              >
+                <CalendarPlus className="h-4 w-4 mr-2" />
+                Add to Calendar
+              </Button>
+            </div>
+          </div>
+
+          {/* Share Section */}
+          <div className="border-t pt-4">
+            {!showShareMenu ? (
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => setShowShareMenu(true)}
+                data-testid="button-share"
+              >
+                <Share2 className="h-4 w-4 mr-2" />
+                Share Event
+              </Button>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm font-medium">Share this event:</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex-col h-auto py-3"
+                    onClick={() => handleShare('whatsapp')}
+                    data-testid="button-share-whatsapp"
+                  >
+                    <SiWhatsapp className="h-5 w-5 mb-1" style={{ color: '#25D366' }} />
+                    <span className="text-xs">WhatsApp</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="flex-col h-auto py-3"
+                    onClick={() => handleShare('twitter')}
+                    data-testid="button-share-twitter"
+                  >
+                    <SiX className="h-5 w-5 mb-1" />
+                    <span className="text-xs">Twitter</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="flex-col h-auto py-3"
+                    onClick={() => handleShare('copy')}
+                    data-testid="button-share-copy"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="h-5 w-5 mb-1 text-green-500" />
+                        <span className="text-xs text-green-500">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="h-5 w-5 mb-1" />
+                        <span className="text-xs">Copy Link</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => setShowShareMenu(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

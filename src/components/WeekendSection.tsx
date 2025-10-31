@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
+import { Sunrise, Sun, Sunset, Moon, ChevronLeft, ChevronRight } from "lucide-react";
 import { EventCard, type Event } from "./EventCard";
+import useEmblaCarousel from "embla-carousel-react";
 
 const timeSlots = [
   { id: "all", label: "All Times", icon: null },
@@ -20,6 +21,11 @@ interface WeekendSectionProps {
 
 export function WeekendSection({ events, onEventClick, isFavorite, onToggleFavorite }: WeekendSectionProps) {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("all");
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: true
+  });
 
   const filteredEvents = events.filter(event => {
     if (selectedTimeSlot === "all") return true;
@@ -29,6 +35,9 @@ export function WeekendSection({ events, onEventClick, isFavorite, onToggleFavor
     return slot?.hours?.includes(hour);
   });
 
+  const scrollPrev = () => emblaApi?.scrollPrev();
+  const scrollNext = () => emblaApi?.scrollNext();
+
   return (
     <section className="py-16">
       <div className="container mx-auto px-4">
@@ -36,14 +45,15 @@ export function WeekendSection({ events, onEventClick, isFavorite, onToggleFavor
           Happening This Weekend
         </h2>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        {/* Time Slot Filters - Better Touch Targets on Mobile */}
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-12">
           {timeSlots.map((slot) => {
             const Icon = slot.icon;
             return (
               <Button
                 key={slot.id}
                 variant={selectedTimeSlot === slot.id ? "default" : "outline"}
-                className="gap-2"
+                className="gap-2 min-h-10 md:min-h-9 px-4 md:px-3 text-base md:text-sm"
                 onClick={() => setSelectedTimeSlot(slot.id)}
                 data-testid={`button-timeslot-${slot.id}`}
               >
@@ -61,17 +71,62 @@ export function WeekendSection({ events, onEventClick, isFavorite, onToggleFavor
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map(event => (
-              <EventCard
-                key={event.id}
-                event={event}
-                onClick={() => onEventClick(event)}
-                isFavorite={isFavorite?.(event.id)}
-                onToggleFavorite={onToggleFavorite}
-              />
-            ))}
-          </div>
+          <>
+            {/* Desktop Grid View */}
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredEvents.map(event => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  onClick={() => onEventClick(event)}
+                  isFavorite={isFavorite?.(event.id)}
+                  onToggleFavorite={onToggleFavorite}
+                />
+              ))}
+            </div>
+
+            {/* Mobile Swipeable Carousel */}
+            <div className="md:hidden relative">
+              <div className="overflow-hidden" ref={emblaRef}>
+                <div className="flex gap-4 touch-pan-y">
+                  {filteredEvents.map(event => (
+                    <div key={event.id} className="flex-[0_0_85%] min-w-0">
+                      <EventCard
+                        event={event}
+                        onClick={() => onEventClick(event)}
+                        isFavorite={isFavorite?.(event.id)}
+                        onToggleFavorite={onToggleFavorite}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Carousel Navigation Buttons */}
+              {filteredEvents.length > 1 && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/90 backdrop-blur-sm shadow-lg min-h-12 min-w-12"
+                    onClick={scrollPrev}
+                    data-testid="button-carousel-prev"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/90 backdrop-blur-sm shadow-lg min-h-12 min-w-12"
+                    onClick={scrollNext}
+                    data-testid="button-carousel-next"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                </>
+              )}
+            </div>
+          </>
         )}
       </div>
     </section>

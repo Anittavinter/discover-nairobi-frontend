@@ -37,13 +37,13 @@ export function EventCard({ event, onClick, isFavorite = false, onToggleFavorite
   };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation();
     onToggleFavorite?.(event.id);
   };
 
   return (
     <Card 
-      className="overflow-hidden hover-elevate active-elevate-2 cursor-pointer group transition-all"
+      className="overflow-hidden hover-elevate active-elevate-2 cursor-pointer group transition-all touch-manipulation"
       onClick={onClick}
       data-testid={`card-event-${event.id}`}
     >
@@ -63,15 +63,16 @@ export function EventCard({ event, onClick, isFavorite = false, onToggleFavorite
             <Clock className="w-3 h-3 mr-1" />
             {event.time}
           </Badge>
-          {/* Favorite Heart Icon */}
+          {/* Enhanced Favorite Button - Better Touch Target */}
           {onToggleFavorite && (
             <button
               onClick={handleFavoriteClick}
-              className="bg-white/90 backdrop-blur-sm rounded-full p-2 hover-elevate active-elevate-2 transition-all"
+              className="bg-white/90 backdrop-blur-sm rounded-full min-w-10 min-h-10 flex items-center justify-center hover-elevate active-elevate-2 transition-all touch-manipulation"
               data-testid={`button-favorite-${event.id}`}
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
               <Heart 
-                className={`w-4 h-4 transition-colors ${
+                className={`w-5 h-5 transition-colors ${
                   isFavorite 
                     ? 'fill-red-500 text-red-500' 
                     : 'text-muted-foreground'
@@ -81,18 +82,18 @@ export function EventCard({ event, onClick, isFavorite = false, onToggleFavorite
           )}
         </div>
         <div className="absolute bottom-3 left-3 right-3">
-          <h3 className="font-display font-bold text-lg text-white drop-shadow-lg line-clamp-2">
+          <h3 className="font-display font-bold text-lg md:text-xl text-white drop-shadow-lg line-clamp-2">
             {event.title}
           </h3>
         </div>
       </div>
-      <div className="p-4 space-y-2">
-        <div className="flex items-center gap-2 text-sm">
-          <Calendar className="w-4 h-4 text-primary" />
+      <div className="p-4 md:p-5 space-y-2">
+        <div className="flex items-center gap-2 text-sm md:text-base">
+          <Calendar className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />
           <span className="font-medium">{format(event.date, "EEE, MMM d")}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <MapPin className="w-4 h-4" />
+        <div className="flex items-center gap-2 text-sm md:text-base text-muted-foreground">
+          <MapPin className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
           <span className="line-clamp-1">{event.location}</span>
         </div>
       </div>

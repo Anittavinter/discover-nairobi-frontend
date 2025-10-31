@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
-import { Search, MapPin, Calendar, X } from "lucide-react";
+import { Search, MapPin, Calendar, X, Filter, ArrowUpDown } from "lucide-react";
 import { Link } from "wouter";
 
 // Sample event data with vibrant categories
@@ -139,6 +140,14 @@ const PRICE_RANGES = [
   { label: "Over KES 2000", min: 2000, max: Infinity },
 ];
 
+const SORT_OPTIONS = [
+  { label: "Date (Earliest)", value: "date-asc" },
+  { label: "Date (Latest)", value: "date-desc" },
+  { label: "Price (Low to High)", value: "price-asc" },
+  { label: "Price (High to Low)", value: "price-desc" },
+  { label: "Name (A-Z)", value: "name-asc" },
+];
+
 function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
   const categoryColors: Record<string, string> = {
     "Live Music": "hsl(var(--primary))",
@@ -229,12 +238,41 @@ function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
   );
 }
 
+function EventCardSkeleton() {
+  return (
+    <div className="rounded-lg overflow-hidden bg-card border">
+      <Skeleton className="h-56 w-full" />
+      <div className="p-6 space-y-4">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-2/3" />
+        <div className="flex justify-between items-center pt-3 border-t">
+          <Skeleton className="h-6 w-20" />
+          <Skeleton className="h-9 w-24" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Events() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("All Areas");
   const [selectedPriceRange, setSelectedPriceRange] = useState(PRICE_RANGES[0]);
   const [viewMode, setViewMode] = useState<"all" | "upcoming" | "free">("all");
+  const [sortBy, setSortBy] = useState("date-asc");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Read search query from URL on page load
   useEffect(() => {
@@ -246,7 +284,7 @@ export default function Events() {
   }, []);
 
   // Filter events
-  const filteredEvents = SAMPLE_EVENTS.filter((event) => {
+  let filteredEvents = SAMPLE_EVENTS.filter((event) => {
     // Search filter
     if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !event.venue.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -268,18 +306,61 @@ export default function Events() {
       return false;
     }
 
+    // Date range filter
+    if (dateFrom && event.date < dateFrom) {
+      return false;
+    }
+    if (dateTo && event.date > dateTo) {
+      return false;
+    }
+
     // View mode filter
     if (viewMode === "free" && event.price !== 0) {
       return false;
+    }
+    if (viewMode === "upcoming") {
+      const today = new Date().toISOString().split('T')[0];
+      if (event.date < today) {
+        return false;
+      }
     }
 
     return true;
   });
 
+  // Sort events
+  filteredEvents = [...filteredEvents].sort((a, b) => {
+    switch (sortBy) {
+      case "date-asc":
+        return a.date.localeCompare(b.date);
+      case "date-desc":
+        return b.date.localeCompare(a.date);
+      case "price-asc":
+        return a.price - b.price;
+      case "price-desc":
+        return b.price - a.price;
+      case "name-asc":
+        return a.title.localeCompare(b.title);
+      default:
+        return 0;
+    }
+  });
+
   const activeFiltersCount = 
     (selectedCategory !== "All Categories" ? 1 : 0) +
     (selectedNeighborhood !== "All Areas" ? 1 : 0) +
-    (selectedPriceRange.label !== "All Prices" ? 1 : 0);
+    (selectedPriceRange.label !== "All Prices" ? 1 : 0) +
+    (dateFrom || dateTo ? 1 : 0);
+
+  const clearAllFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("All Categories");
+    setSelectedNeighborhood("All Areas");
+    setSelectedPriceRange(PRICE_RANGES[0]);
+    setDateFrom("");
+    setDateTo("");
+    setViewMode("all");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -298,7 +379,7 @@ export default function Events() {
               Browse Events
             </h1>
             <p className="text-lg text-white/90 text-center mb-6">
-              {filteredEvents.length} events happening in Nairobi
+              {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''} happening in Nairobi
             </p>
 
             {/* Search Bar */}
@@ -328,85 +409,164 @@ export default function Events() {
               </TabsList>
             </Tabs>
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-3 mb-8">
-              {/* Category Filter */}
-              <div className="relative">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="h-10 px-4 pr-10 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer hover-elevate"
-                  data-testid="select-category"
-                >
-                  {CATEGORIES.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
+            {/* Filters Row */}
+            <div className="flex flex-wrap gap-3 mb-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Filter className="w-4 h-4" />
+                Filters:
               </div>
+
+              {/* Category Filter */}
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="h-10 px-4 pr-10 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer hover-elevate"
+                data-testid="select-category"
+              >
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
 
               {/* Neighborhood Filter */}
-              <div className="relative">
-                <select
-                  value={selectedNeighborhood}
-                  onChange={(e) => setSelectedNeighborhood(e.target.value)}
-                  className="h-10 px-4 pr-10 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer hover-elevate"
-                  data-testid="select-neighborhood"
-                >
-                  {NEIGHBORHOODS.map((area) => (
-                    <option key={area} value={area}>{area}</option>
-                  ))}
-                </select>
-              </div>
+              <select
+                value={selectedNeighborhood}
+                onChange={(e) => setSelectedNeighborhood(e.target.value)}
+                className="h-10 px-4 pr-10 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer hover-elevate"
+                data-testid="select-neighborhood"
+              >
+                {NEIGHBORHOODS.map((area) => (
+                  <option key={area} value={area}>{area}</option>
+                ))}
+              </select>
 
               {/* Price Filter */}
-              <div className="relative">
+              <select
+                value={selectedPriceRange.label}
+                onChange={(e) => {
+                  const range = PRICE_RANGES.find(r => r.label === e.target.value);
+                  if (range) setSelectedPriceRange(range);
+                }}
+                className="h-10 px-4 pr-10 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer hover-elevate"
+                data-testid="select-price"
+              >
+                {PRICE_RANGES.map((range) => (
+                  <option key={range.label} value={range.label}>{range.label}</option>
+                ))}
+              </select>
+
+              {/* Date From */}
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-10 w-auto text-sm"
+                placeholder="From date"
+                data-testid="input-date-from"
+              />
+
+              {/* Date To */}
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-10 w-auto text-sm"
+                placeholder="To date"
+                data-testid="input-date-to"
+              />
+
+              {/* Sort */}
+              <div className="ml-auto flex items-center gap-2">
+                <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
                 <select
-                  value={selectedPriceRange.label}
-                  onChange={(e) => {
-                    const range = PRICE_RANGES.find(r => r.label === e.target.value);
-                    if (range) setSelectedPriceRange(range);
-                  }}
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
                   className="h-10 px-4 pr-10 rounded-md border border-input bg-background text-sm appearance-none cursor-pointer hover-elevate"
-                  data-testid="select-price"
+                  data-testid="select-sort"
                 >
-                  {PRICE_RANGES.map((range) => (
-                    <option key={range.label} value={range.label}>{range.label}</option>
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
               </div>
-
-              {/* Clear Filters */}
-              {activeFiltersCount > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedCategory("All Categories");
-                    setSelectedNeighborhood("All Areas");
-                    setSelectedPriceRange(PRICE_RANGES[0]);
-                  }}
-                  data-testid="button-clear-filters"
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Clear {activeFiltersCount} filter{activeFiltersCount > 1 ? 's' : ''}
-                </Button>
-              )}
             </div>
 
+            {/* Active Filter Chips */}
+            {activeFiltersCount > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {selectedCategory !== "All Categories" && (
+                  <Badge 
+                    variant="secondary" 
+                    className="gap-1 cursor-pointer hover-elevate"
+                    onClick={() => setSelectedCategory("All Categories")}
+                    data-testid="chip-category"
+                  >
+                    {selectedCategory}
+                    <X className="w-3 h-3" />
+                  </Badge>
+                )}
+                {selectedNeighborhood !== "All Areas" && (
+                  <Badge 
+                    variant="secondary" 
+                    className="gap-1 cursor-pointer hover-elevate"
+                    onClick={() => setSelectedNeighborhood("All Areas")}
+                    data-testid="chip-neighborhood"
+                  >
+                    {selectedNeighborhood}
+                    <X className="w-3 h-3" />
+                  </Badge>
+                )}
+                {selectedPriceRange.label !== "All Prices" && (
+                  <Badge 
+                    variant="secondary" 
+                    className="gap-1 cursor-pointer hover-elevate"
+                    onClick={() => setSelectedPriceRange(PRICE_RANGES[0])}
+                    data-testid="chip-price"
+                  >
+                    {selectedPriceRange.label}
+                    <X className="w-3 h-3" />
+                  </Badge>
+                )}
+                {(dateFrom || dateTo) && (
+                  <Badge 
+                    variant="secondary" 
+                    className="gap-1 cursor-pointer hover-elevate"
+                    onClick={() => {
+                      setDateFrom("");
+                      setDateTo("");
+                    }}
+                    data-testid="chip-date"
+                  >
+                    {dateFrom && dateTo ? `${dateFrom} to ${dateTo}` : dateFrom ? `From ${dateFrom}` : `Until ${dateTo}`}
+                    <X className="w-3 h-3" />
+                  </Badge>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearAllFilters}
+                  className="h-6"
+                  data-testid="button-clear-all"
+                >
+                  Clear All
+                </Button>
+              </div>
+            )}
+
             {/* Events Grid */}
-            {filteredEvents.length === 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <EventCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : filteredEvents.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-xl text-muted-foreground mb-4">No events found</p>
                 <p className="text-sm text-muted-foreground mb-6">Try adjusting your filters or search query</p>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSelectedCategory("All Categories");
-                    setSelectedNeighborhood("All Areas");
-                    setSelectedPriceRange(PRICE_RANGES[0]);
-                    setViewMode("all");
-                  }}
+                  onClick={clearAllFilters}
                   data-testid="button-reset-all"
                 >
                   Reset All Filters
