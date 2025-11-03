@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect } from "react";
 import { Search, MapPin, Calendar, X, Filter, ArrowUpDown } from "lucide-react";
 import { Link } from "wouter";
+import { getEvents } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 // Sample event data with vibrant categories
 const SAMPLE_EVENTS = [
@@ -100,7 +102,10 @@ const SAMPLE_EVENTS = [
     price: 1200,
     image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
   },
-];
+] as const;
+
+// Define Event type
+type Event = typeof SAMPLE_EVENTS[number];
 
 const CATEGORIES = [
   "All Categories",
@@ -148,7 +153,7 @@ const SORT_OPTIONS = [
   { label: "Name (A-Z)", value: "name-asc" },
 ];
 
-function EventCard({ event }: { event: typeof SAMPLE_EVENTS[0] }) {
+function EventCard({ event }: { event: Event }) {
   const categoryColors: Record<string, string> = {
     "Live Music": "hsl(var(--primary))",
     "Art Exhibitions": "hsl(var(--secondary))",
@@ -264,15 +269,17 @@ export default function Events() {
   const [sortBy, setSortBy] = useState("date-asc");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Simulate loading state
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, []);
+  // Use TanStack Query to fetch events from API
+  const { data: apiEvents, isLoading, isError } = useQuery({
+    queryKey: ['/api/events'],
+    queryFn: getEvents,
+    retry: 1,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Use API data if available, otherwise fallback to SAMPLE_EVENTS
+  const eventsData: Event[] = apiEvents || SAMPLE_EVENTS;
 
   // Read search query from URL on page load
   useEffect(() => {
@@ -284,7 +291,7 @@ export default function Events() {
   }, []);
 
   // Filter events
-  let filteredEvents = SAMPLE_EVENTS.filter((event) => {
+  let filteredEvents = eventsData.filter((event: Event) => {
     // Search filter
     if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !event.venue.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -400,6 +407,15 @@ export default function Events() {
         {/* Filters & Events Grid */}
         <section className="py-8 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
+            {/* Show error message if API fails */}
+            {isError && (
+              <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md">
+                <p className="text-sm text-destructive">
+                  ⚠️ Could not connect to backend. Showing sample data. (Backend at: {import.meta.env.VITE_API_URL || 'http://localhost:3000'})
+                </p>
+              </div>
+            )}
+
             {/* View Mode Tabs */}
             <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)} className="mb-6">
               <TabsList className="grid w-full max-w-md grid-cols-3">
@@ -574,7 +590,7 @@ export default function Events() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredEvents.map((event) => (
+                {filteredEvents.map((event: Event) => (
                   <EventCard key={event.id} event={event} />
                 ))}
               </div>
