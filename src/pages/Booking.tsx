@@ -10,94 +10,84 @@ import { saveBooking, generateConfirmationCode } from "@/lib/bookings";
 
 const sampleEvents = [
   {
-    id: "1",
-    title: "Rooftop Jazz Night at Kilimanjaro",
-    date: new Date(2025, 9, 20),
-    time: "19:30",
-    location: "Kilimanjaro Jamia, Westlands",
+    id: 1,
+    title: "Amapiano Night at Westlands",
+    date: new Date(2025, 9, 25),
+    time: "8:00 PM",
+    location: "The Alchemist",
     neighborhood: "Westlands",
     imageUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800",
-    price: 2500,
-  },
-  {
-    id: "2",
-    title: "Sunrise Yoga & Meditation",
-    date: new Date(2025, 9, 21),
-    time: "07:00",
-    location: "Karura Forest, Muthaiga",
-    neighborhood: "Muthaiga",
-    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
-    price: 1000,
-  },
-  {
-    id: "3",
-    title: "Tech Innovators Meetup",
-    date: new Date(2025, 9, 22),
-    time: "14:00",
-    location: "iHub, Ngong Road",
-    neighborhood: "Kilimani",
-    imageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800",
-    price: 0,
-  },
-  {
-    id: "4",
-    title: "International DJ Night: Afro House",
-    date: new Date(2025, 9, 23),
-    time: "22:00",
-    location: "Alchemist Bar, Westlands",
-    neighborhood: "Westlands",
-    imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800",
-    price: 3000,
-  },
-  {
-    id: "5",
-    title: "Contemporary Art Exhibition",
-    date: new Date(2025, 9, 24),
-    time: "11:00",
-    location: "Circle Art Gallery, Karen",
-    neighborhood: "Karen",
-    imageUrl: "https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?w=800",
-    price: 800,
-  },
-  {
-    id: "6",
-    title: "Street Food Festival",
-    date: new Date(2025, 9, 25),
-    time: "16:00",
-    location: "Two Rivers Mall, Ruaka",
-    neighborhood: "Ruaka",
-    imageUrl: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800",
     price: 1500,
   },
   {
-    id: "7",
-    title: "Organic Farmers Market",
+    id: 2,
+    title: "Morning Yoga at Karura Forest",
+    date: new Date(2025, 9, 23),
+    time: "6:30 AM",
+    location: "Karura Forest",
+    neighborhood: "Kiambu Road",
+    imageUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+    price: 0,
+  },
+  {
+    id: 3,
+    title: "Tech Startup Pitch Night",
+    date: new Date(2025, 9, 24),
+    time: "6:00 PM",
+    location: "iHub Nairobi",
+    neighborhood: "CBD",
+    imageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800",
+    price: 500,
+  },
+  {
+    id: 4,
+    title: "Nyama Choma Festival",
     date: new Date(2025, 9, 26),
-    time: "09:00",
-    location: "Karen Country Club",
+    time: "12:00 PM",
+    location: "Karen Gardens",
     neighborhood: "Karen",
-    imageUrl: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=800",
-    price: 500,
+    imageUrl: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800",
+    price: 2000,
   },
   {
-    id: "8",
-    title: "Morning Run & Coffee",
+    id: 5,
+    title: "Contemporary Art Exhibition",
     date: new Date(2025, 9, 27),
-    time: "06:30",
-    location: "Karura Forest Main Gate",
-    neighborhood: "Muthaiga",
-    imageUrl: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800",
+    time: "10:00 AM",
+    location: "Nairobi Gallery",
+    neighborhood: "Lavington",
+    imageUrl: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800",
+    price: 800,
+  },
+  {
+    id: 6,
+    title: "Open Mic Comedy Night",
+    date: new Date(2025, 9, 25),
+    time: "7:30 PM",
+    location: "Churchill's Pub",
+    neighborhood: "Westlands",
+    imageUrl: "https://images.unsplash.com/photo-1585699324551-f6c309eedeca?w=800",
     price: 500,
   },
   {
-    id: "9",
-    title: "Jockey Polo Tournament",
+    id: 7,
+    title: "Afrobeat Dance Workshop",
     date: new Date(2025, 9, 28),
-    time: "15:00",
-    location: "Karen Polo Club",
-    neighborhood: "Karen",
-    imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
-    price: 5000,
+    time: "3:00 PM",
+    location: "Dance Studio 254",
+    neighborhood: "Kilimani",
+    imageUrl: "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=800",
+    price: 1000,
+  },
+  {
+    id: 8,
+    title: "Rooftop Sundowner Party",
+    date: new Date(2025, 9, 26),
+    time: "5:00 PM",
+    location: "Sky Lounge",
+    neighborhood: "Parklands",
+    imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
+    price: 1200,
   },
 ];
 
@@ -105,7 +95,7 @@ export default function Booking() {
   const [, params] = useRoute("/booking/:eventId");
   const eventId = params?.eventId;
   
-  const event = sampleEvents.find(e => e.id === eventId);
+  const event = sampleEvents.find(e => e.id === Number(eventId));
   const [quantity, setQuantity] = useState(1);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -128,6 +118,7 @@ export default function Booking() {
   }
 
   const total = event.price * quantity;
+  const isFreeEvent = event.price === 0;
 
   const handlePaymentSuccess = () => {
     const bookingId = `BK${Date.now()}`;
@@ -135,7 +126,7 @@ export default function Booking() {
     
     saveBooking({
       id: bookingId,
-      eventId: event.id,
+      eventId: event.id.toString(),
       eventTitle: event.title,
       eventDate: event.date,
       eventTime: event.time,
@@ -145,7 +136,7 @@ export default function Booking() {
       ticketQuantity: quantity,
       totalAmount: total,
       confirmationCode,
-      paymentMethod: event.price === 0 ? "Free Event" : "M-PESA",
+      paymentMethod: isFreeEvent ? "Free Event" : "M-PESA",
       bookingDate: new Date(),
       status: "confirmed",
     });
@@ -154,7 +145,7 @@ export default function Booking() {
   };
 
   const handleProceed = () => {
-    if (event.price === 0) {
+    if (isFreeEvent) {
       handlePaymentSuccess();
     } else {
       setShowPaymentModal(true);
@@ -206,7 +197,7 @@ export default function Booking() {
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <p className="font-semibold">General Admission</p>
-                      {event.price === 0 ? (
+                      {isFreeEvent ? (
                         <p className="text-sm text-green-600 dark:text-green-400 font-semibold">FREE</p>
                       ) : (
                         <p className="text-sm text-muted-foreground">KSh {event.price.toLocaleString()}</p>
@@ -236,7 +227,7 @@ export default function Booking() {
                   <div className="border-t pt-4">
                     <div className="flex justify-between text-lg font-bold mb-4">
                       <span>Total</span>
-                      {event.price === 0 ? (
+                      {isFreeEvent ? (
                         <span className="text-green-600 dark:text-green-400">FREE</span>
                       ) : (
                         <span>KSh {total.toLocaleString()}</span>
@@ -249,12 +240,12 @@ export default function Booking() {
                       onClick={handleProceed}
                       data-testid="button-proceed-payment"
                     >
-                      {event.price === 0 ? "Confirm Free Booking" : `Pay with M-PESA - KSh ${total.toLocaleString()}`}
+                      {isFreeEvent ? "Confirm Free Booking ✓" : `Pay with M-PESA - KSh ${total.toLocaleString()}`}
                     </Button>
                   </div>
 
                   <p className="text-xs text-center text-muted-foreground">
-                    🔒 {event.price === 0 ? "Free event - No payment required" : "Secure payment with M-PESA"}
+                    🔒 {isFreeEvent ? "Free event - No payment required" : "Secure payment with M-PESA"}
                   </p>
                 </div>
               </Card>
