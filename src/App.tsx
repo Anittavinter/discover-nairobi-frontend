@@ -14,9 +14,11 @@ import Login from "@/pages/Login";
 import Booking from "@/pages/Booking";
 import Confirmation from "@/pages/Confirmation";
 import MyTickets from "@/pages/MyTickets";
-import NotFound from "@/pages/NotFound";
 import Refund from "@/pages/Refund";
 import Profile from "@/pages/Profile";
+import AddEvent from "@/pages/AddEvent";
+import OrganizerDashboard from "@/pages/OrganizerDashboard";
+import NotFound from "@/pages/NotFound";
 
 export default function App() {
   return (
@@ -38,6 +40,8 @@ export default function App() {
         <Route path="/my-tickets" component={MyTickets} />
         <Route path="/refund" component={Refund} />
         <Route path="/profile" component={Profile} />
+        <Route path="/add-event" component={AddEvent} />
+        <Route path="/organizer-dashboard" component={OrganizerDashboard} />
         <Route component={NotFound} />
       </Switch>
     </ThemeProvider>

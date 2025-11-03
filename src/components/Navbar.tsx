@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, Ticket, LayoutDashboard } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Link, useLocation } from "wouter";
 
@@ -44,6 +44,26 @@ export function Navbar() {
             ))}
             
             <div className="ml-2 pl-2 border-l flex items-center gap-1">
+              <Link href="/my-tickets">
+                <Button
+                  variant={location === "/my-tickets" ? "default" : "ghost"}
+                  size="sm"
+                  data-testid="button-nav-my-tickets"
+                >
+                  <Ticket className="h-4 w-4 mr-2" />
+                  My Tickets
+                </Button>
+              </Link>
+              <Link href="/organizer-dashboard">
+                <Button
+                  variant={location === "/organizer-dashboard" ? "default" : "outline"}
+                  size="sm"
+                  data-testid="button-nav-organizer-dashboard"
+                >
+                  <LayoutDashboard className="h-4 w-4 mr-2" />
+                  Organizer
+                </Button>
+              </Link>
               <Link href="/profile">
                 <Button
                   variant={location === "/profile" ? "default" : "ghost"}
@@ -83,6 +103,30 @@ export function Navbar() {
                 </Button>
               </Link>
             ))}
+            
+            <Link href="/my-tickets" className="block">
+              <Button
+                variant={location === "/my-tickets" ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="button-nav-mobile-my-tickets"
+              >
+                <Ticket className="h-4 w-4 mr-2" />
+                My Tickets
+              </Button>
+            </Link>
+
+            <Link href="/organizer-dashboard" className="block">
+              <Button
+                variant={location === "/organizer-dashboard" ? "default" : "outline"}
+                className="w-full justify-start"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="button-nav-mobile-organizer-dashboard"
+              >
+                <LayoutDashboard className="h-4 w-4 mr-2" />
+                Organizer Dashboard
+              </Button>
+            </Link>
             
             <Link href="/profile" className="block">
               <Button
