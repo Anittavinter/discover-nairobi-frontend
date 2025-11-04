@@ -178,7 +178,6 @@ function EventCard({ event }: { event: Event }) {
       className="overflow-hidden hover-elevate cursor-pointer group"
       data-testid={`card-event-${event.id}`}
     >
-      {/* Event Image */}
       <div className="relative h-56 overflow-hidden bg-muted">
         <img 
           src={event.image} 
@@ -203,26 +202,21 @@ function EventCard({ event }: { event: Event }) {
         )}
       </div>
 
-      {/* Event Details */}
       <div className="p-6 space-y-4">
-        {/* Title */}
         <h3 className="font-bold text-xl line-clamp-2 leading-tight" data-testid={`text-event-title-${event.id}`}>
           {event.title}
         </h3>
 
-        {/* Date + Time */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="w-4 h-4 flex-shrink-0" />
           <span>{formatDate(event.date)} • {event.time}</span>
         </div>
 
-        {/* Venue */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="w-4 h-4 flex-shrink-0" />
           <span className="truncate">{event.venue}</span>
         </div>
 
-        {/* Price + Button */}
         <div className="flex items-center justify-between pt-3 border-t">
           <div className="font-bold text-lg text-foreground">
             {event.price === 0 ? "FREE" : `KES ${event.price.toLocaleString()}`}
@@ -270,7 +264,6 @@ export default function Events() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
-  // Use TanStack Query to fetch events from API
   const { data: apiEvents, isLoading, isError } = useQuery({
     queryKey: ['/api/events'],
     queryFn: getEvents,
@@ -278,10 +271,8 @@ export default function Events() {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Use API data if available, otherwise fallback to SAMPLE_EVENTS
   const eventsData: Event[] = apiEvents || SAMPLE_EVENTS;
 
-  // Read search query from URL on page load
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const searchParam = params.get('search');
@@ -290,30 +281,24 @@ export default function Events() {
     }
   }, []);
 
-  // Filter events
   let filteredEvents = eventsData.filter((event: Event) => {
-    // Search filter
     if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !event.venue.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
 
-    // Category filter
     if (selectedCategory !== "All Categories" && event.category !== selectedCategory) {
       return false;
     }
 
-    // Neighborhood filter
     if (selectedNeighborhood !== "All Areas" && event.neighborhood !== selectedNeighborhood) {
       return false;
     }
 
-    // Price filter
     if (event.price < selectedPriceRange.min || event.price > selectedPriceRange.max) {
       return false;
     }
 
-    // Date range filter
     if (dateFrom && event.date < dateFrom) {
       return false;
     }
@@ -321,7 +306,6 @@ export default function Events() {
       return false;
     }
 
-    // View mode filter
     if (viewMode === "free" && event.price !== 0) {
       return false;
     }
@@ -335,7 +319,6 @@ export default function Events() {
     return true;
   });
 
-  // Sort events
   filteredEvents = [...filteredEvents].sort((a, b) => {
     switch (sortBy) {
       case "date-asc":
@@ -374,7 +357,6 @@ export default function Events() {
       <Navbar />
       
       <main className="flex-1">
-        {/* Hero Section */}
         <section 
           className="py-12 px-4 md:px-8 border-b relative overflow-hidden"
           style={{
@@ -389,7 +371,6 @@ export default function Events() {
               {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''} happening in Nairobi
             </p>
 
-            {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
@@ -404,10 +385,8 @@ export default function Events() {
           </div>
         </section>
 
-        {/* Filters & Events Grid */}
         <section className="py-8 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Show error message if API fails */}
             {isError && (
               <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-md">
                 <p className="text-sm text-destructive">
@@ -416,7 +395,6 @@ export default function Events() {
               </div>
             )}
 
-            {/* View Mode Tabs */}
             <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)} className="mb-6">
               <TabsList className="grid w-full max-w-md grid-cols-3">
                 <TabsTrigger value="all" data-testid="tab-all-events">All Events</TabsTrigger>
@@ -425,14 +403,12 @@ export default function Events() {
               </TabsList>
             </Tabs>
 
-            {/* Filters Row */}
             <div className="flex flex-wrap gap-3 mb-4">
               <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 <Filter className="w-4 h-4" />
                 Filters:
               </div>
 
-              {/* Category Filter */}
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -444,7 +420,6 @@ export default function Events() {
                 ))}
               </select>
 
-              {/* Neighborhood Filter */}
               <select
                 value={selectedNeighborhood}
                 onChange={(e) => setSelectedNeighborhood(e.target.value)}
@@ -456,7 +431,6 @@ export default function Events() {
                 ))}
               </select>
 
-              {/* Price Filter */}
               <select
                 value={selectedPriceRange.label}
                 onChange={(e) => {
@@ -471,7 +445,6 @@ export default function Events() {
                 ))}
               </select>
 
-              {/* Date From */}
               <Input
                 type="date"
                 value={dateFrom}
@@ -481,7 +454,6 @@ export default function Events() {
                 data-testid="input-date-from"
               />
 
-              {/* Date To */}
               <Input
                 type="date"
                 value={dateTo}
@@ -491,7 +463,6 @@ export default function Events() {
                 data-testid="input-date-to"
               />
 
-              {/* Sort */}
               <div className="ml-auto flex items-center gap-2">
                 <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
                 <select
@@ -507,7 +478,6 @@ export default function Events() {
               </div>
             </div>
 
-            {/* Active Filter Chips */}
             {activeFiltersCount > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
                 {selectedCategory !== "All Categories" && (
@@ -569,7 +539,6 @@ export default function Events() {
               </div>
             )}
 
-            {/* Events Grid */}
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
