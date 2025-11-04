@@ -63,8 +63,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <div className="font-display font-bold text-xl bg-gradient-to-r from-primary via-chart-2 to-chart-3 bg-clip-text text-transparent">
-              Discover Nairobi
+            <div className="flex items-center gap-2">
+              <img 
+                src="/logo.png" 
+                alt="Discover Nairobi" 
+                className="h-16 w-16 object-contain"
+              />
+              <div className="font-display font-bold text-xl bg-gradient-to-r from-primary via-chart-2 to-chart-3 bg-clip-text text-transparent">
+                Discover Nairobi
+              </div>
             </div>
             <p className="text-sm text-muted-foreground">
               Where Nairobi Comes Alive
@@ -102,7 +109,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* For Organizers Section - NEW! */}
+          {/* For Organizers Section */}
           <div className="space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wide">For Organizers</h3>
             <ul className="space-y-2">

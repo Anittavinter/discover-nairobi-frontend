@@ -39,6 +39,11 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" data-testid="link-logo">
             <div className="flex items-center gap-2 hover-elevate px-3 py-2 rounded-md cursor-pointer">
+              <img 
+                src="/logo.png" 
+                alt="Discover Nairobi" 
+                className="h-14 w-14 object-contain"
+              />
               <div className="font-display font-bold text-xl bg-gradient-to-r from-primary via-chart-2 to-chart-3 bg-clip-text text-transparent">
                 Discover Nairobi
               </div>
