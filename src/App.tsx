@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
@@ -22,6 +23,7 @@ import Refund from "@/pages/Refund";
 import Profile from "@/pages/Profile";
 import AddEvent from "@/pages/AddEvent";
 import OrganizerDashboard from "@/pages/OrganizerDashboard";
+import BecomeOrganizer from "@/pages/BecomeOrganizer";
 import NotFound from "@/pages/NotFound";
 
 function Router() {
@@ -38,6 +40,7 @@ function Router() {
       <Route path="/calendar" component={Calendar} />
       <Route path="/signup" component={SignUp} />
       <Route path="/login" component={Login} />
+      <Route path="/become-organizer" component={BecomeOrganizer} />
       <Route path="/booking" component={Booking} />
       <Route path="/confirmation" component={Confirmation} />
       <Route path="/my-tickets" component={MyTickets} />
@@ -45,6 +48,7 @@ function Router() {
       <Route path="/profile" component={Profile} />
       <Route path="/add-event" component={AddEvent} />
       <Route path="/organizer" component={OrganizerDashboard} />
+      <Route path="/organizer-dashboard" component={OrganizerDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -53,12 +57,14 @@ function Router() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

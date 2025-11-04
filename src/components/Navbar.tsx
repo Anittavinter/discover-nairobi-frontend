@@ -1,12 +1,28 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Ticket, LayoutDashboard } from "lucide-react";
+import { Menu, X, User, Ticket, LayoutDashboard, LogOut } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
+  const { user, logout, isOrganizer, isLoggedIn } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const handleLogout = () => {
+    logout();
+    setLocation('/');
+    setMobileMenuOpen(false);
+  };
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -44,37 +60,103 @@ export function Navbar() {
             ))}
             
             <div className="ml-2 pl-2 border-l flex items-center gap-1">
-              <Link href="/my-tickets">
-                <Button
-                  variant={location === "/my-tickets" ? "default" : "ghost"}
-                  size="sm"
-                  data-testid="button-nav-my-tickets"
-                >
-                  <Ticket className="h-4 w-4 mr-2" />
-                  My Tickets
-                </Button>
-              </Link>
-              <Link href="/organizer-dashboard">
-                <Button
-                  variant={location === "/organizer-dashboard" ? "default" : "outline"}
-                  size="sm"
-                  data-testid="button-nav-organizer-dashboard"
-                >
-                  <LayoutDashboard className="h-4 w-4 mr-2" />
-                  Organizer
-                </Button>
-              </Link>
-              <Link href="/profile">
-                <Button
-                  variant={location === "/profile" ? "default" : "ghost"}
-                  size="sm"
-                  data-testid="button-nav-profile"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </Button>
-              </Link>
+              {isLoggedIn && (
+                <Link href="/my-tickets">
+                  <Button
+                    variant={location === "/my-tickets" ? "default" : "ghost"}
+                    size="sm"
+                    data-testid="button-nav-my-tickets"
+                  >
+                    <Ticket className="h-4 w-4 mr-2" />
+                    My Tickets
+                  </Button>
+                </Link>
+              )}
+
+              {/* Only show Organizer Dashboard if user is an organizer */}
+              {isOrganizer && (
+                <Link href="/organizer">
+                  <Button
+                    variant={location.startsWith("/organizer") ? "default" : "outline"}
+                    size="sm"
+                    data-testid="button-nav-organizer-dashboard"
+                  >
+                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                    Organizer
+                  </Button>
+                </Link>
+              )}
+
               <ThemeToggle />
+
+              {/* Profile Dropdown or Login Button */}
+              {isLoggedIn ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant={location === "/profile" ? "default" : "ghost"}
+                      size="sm"
+                      data-testid="button-nav-profile"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      {user?.name || user?.email}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <Link href="/profile">
+                      <DropdownMenuItem data-testid="menu-profile">
+                        <User className="w-4 h-4 mr-2" />
+                        Profile
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/my-tickets">
+                      <DropdownMenuItem data-testid="menu-my-tickets">
+                        <Ticket className="w-4 h-4 mr-2" />
+                        My Tickets
+                      </DropdownMenuItem>
+                    </Link>
+                    
+                    {isOrganizer && (
+                      <Link href="/organizer">
+                        <DropdownMenuItem data-testid="menu-organizer">
+                          <LayoutDashboard className="w-4 h-4 mr-2" />
+                          Organizer Dashboard
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+
+                    {/* Show "Become an Organizer" for regular users */}
+                    {!isOrganizer && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <Link href="/become-organizer">
+                          <DropdownMenuItem 
+                            className="text-primary font-semibold"
+                            data-testid="menu-become-organizer"
+                          >
+                            🎤 Become an Organizer
+                          </DropdownMenuItem>
+                        </Link>
+                      </>
+                    )}
+
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={handleLogout}
+                      data-testid="menu-logout"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link href="/login">
+                  <Button size="sm" data-testid="button-nav-login">
+                    Login
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -104,41 +186,82 @@ export function Navbar() {
               </Link>
             ))}
             
-            <Link href="/my-tickets" className="block">
-              <Button
-                variant={location === "/my-tickets" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="button-nav-mobile-my-tickets"
-              >
-                <Ticket className="h-4 w-4 mr-2" />
-                My Tickets
-              </Button>
-            </Link>
+            {isLoggedIn && (
+              <>
+                <Link href="/my-tickets" className="block">
+                  <Button
+                    variant={location === "/my-tickets" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid="button-nav-mobile-my-tickets"
+                  >
+                    <Ticket className="h-4 w-4 mr-2" />
+                    My Tickets
+                  </Button>
+                </Link>
 
-            <Link href="/organizer-dashboard" className="block">
-              <Button
-                variant={location === "/organizer-dashboard" ? "default" : "outline"}
+                <Link href="/profile" className="block">
+                  <Button
+                    variant={location === "/profile" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid="button-nav-mobile-profile"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                </Link>
+              </>
+            )}
+
+            {isOrganizer && (
+              <Link href="/organizer" className="block">
+                <Button
+                  variant={location.startsWith("/organizer") ? "default" : "outline"}
+                  className="w-full justify-start"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="button-nav-mobile-organizer-dashboard"
+                >
+                  <LayoutDashboard className="h-4 w-4 mr-2" />
+                  Organizer Dashboard
+                </Button>
+              </Link>
+            )}
+
+            {!isOrganizer && isLoggedIn && (
+              <Link href="/become-organizer" className="block">
+                <Button 
+                  variant="default"
+                  className="w-full justify-start"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="button-nav-mobile-become-organizer"
+                >
+                  🎤 Become an Organizer
+                </Button>
+              </Link>
+            )}
+
+            {isLoggedIn ? (
+              <Button 
+                variant="ghost"
                 className="w-full justify-start"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="button-nav-mobile-organizer-dashboard"
+                onClick={handleLogout}
+                data-testid="button-nav-mobile-logout"
               >
-                <LayoutDashboard className="h-4 w-4 mr-2" />
-                Organizer Dashboard
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
               </Button>
-            </Link>
-            
-            <Link href="/profile" className="block">
-              <Button
-                variant={location === "/profile" ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="button-nav-mobile-profile"
-              >
-                <User className="h-4 w-4 mr-2" />
-                Profile
-              </Button>
-            </Link>
+            ) : (
+              <Link href="/login" className="block">
+                <Button 
+                  className="w-full"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="button-nav-mobile-login"
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
             
             <div className="flex items-center justify-between pt-2 px-2 border-t">
               <span className="text-sm font-medium">Theme</span>

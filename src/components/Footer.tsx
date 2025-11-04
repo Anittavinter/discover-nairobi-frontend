@@ -102,28 +102,28 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company Section */}
+          {/* For Organizers Section - NEW! */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-sm uppercase tracking-wide">Company</h3>
+            <h3 className="font-semibold text-sm uppercase tracking-wide">For Organizers</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" data-testid="link-footer-about">
-                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                    About Us
+                <Link href="/become-organizer" data-testid="link-footer-become-organizer">
+                  <span className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors cursor-pointer">
+                    List Your Event
                   </span>
                 </Link>
               </li>
               <li>
-                <Link href="/contact" data-testid="link-footer-contact">
+                <Link href="/faqs#organizer" data-testid="link-footer-organizer-faq">
                   <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                    Contact
+                    Organizer FAQ
                   </span>
                 </Link>
               </li>
               <li>
-                <Link href="/faqs" data-testid="link-footer-faqs">
+                <Link href="/contact" data-testid="link-footer-contact-organizers">
                   <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                    FAQs
+                    Contact Us
                   </span>
                 </Link>
               </li>
