@@ -24,6 +24,7 @@ import Profile from "@/pages/Profile";
 import AddEvent from "@/pages/AddEvent";
 import OrganizerDashboard from "@/pages/OrganizerDashboard";
 import BecomeOrganizer from "@/pages/BecomeOrganizer";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import NotFound from "@/pages/NotFound";
 
 function Router() {
@@ -60,6 +61,7 @@ export default function App() {
       <AuthProvider>
         <ThemeProvider>
           <TooltipProvider>
+            <ScrollToTop />
             <Toaster />
             <Router />
           </TooltipProvider>
