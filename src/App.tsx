@@ -42,8 +42,8 @@ function Router() {
       <Route path="/signup" component={SignUp} />
       <Route path="/login" component={Login} />
       <Route path="/become-organizer" component={BecomeOrganizer} />
-      <Route path="/booking" component={Booking} />
-      <Route path="/confirmation" component={Confirmation} />
+      <Route path="/booking/:eventId" component={Booking} />
+      <Route path="/confirmation/:bookingId" component={Confirmation} />
       <Route path="/my-tickets" component={MyTickets} />
       <Route path="/refund" component={Refund} />
       <Route path="/profile" component={Profile} />

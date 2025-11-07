@@ -42,7 +42,6 @@ export function MpesaPaymentModal({
   const handleSubmitPhone = () => {
     if (phoneNumber.length < 10) return;
     
-    // Simulate STK Push
     setStep("processing");
     setTimeout(() => {
       setStep("pin");
@@ -54,11 +53,9 @@ export function MpesaPaymentModal({
       setPin(value);
       
       if (value.length === 4) {
-        // Simulate payment processing
         setTimeout(() => {
           setStep("processing");
           setTimeout(() => {
-            // 90% success rate simulation
             const success = Math.random() > 0.1;
             if (success) {
               setStep("success");
@@ -91,9 +88,9 @@ export function MpesaPaymentModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md !bg-white !text-gray-900">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-gray-900">
             <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center">
               <span className="text-white font-bold text-lg">M</span>
             </div>
@@ -106,7 +103,7 @@ export function MpesaPaymentModal({
           {step === "phone" && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="phone">M-PESA Phone Number</Label>
+                <Label htmlFor="phone" className="text-gray-700 font-semibold">M-PESA Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -114,20 +111,20 @@ export function MpesaPaymentModal({
                   value={phoneNumber}
                   onChange={handlePhoneChange}
                   data-testid="input-mpesa-phone"
-                  className="text-lg"
+                  className="text-lg text-gray-900 bg-white border-2 border-gray-300"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-gray-600">
                   Enter your Safaricom number
                 </p>
               </div>
 
-              <div className="bg-muted p-4 rounded-lg space-y-1">
+              <div className="bg-gray-50 p-4 rounded-lg space-y-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Event</span>
-                  <span className="font-medium">{eventTitle}</span>
+                  <span className="text-gray-600">Event</span>
+                  <span className="font-medium text-gray-900">{eventTitle}</span>
                 </div>
                 <div className="flex justify-between text-lg font-bold">
-                  <span>Total Amount</span>
+                  <span className="text-gray-900">Total Amount</span>
                   <span className="text-green-600">KSh {amount.toLocaleString()}</span>
                 </div>
               </div>
@@ -135,7 +132,7 @@ export function MpesaPaymentModal({
               <Button
                 onClick={handleSubmitPhone}
                 disabled={phoneNumber.length < 10}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
                 data-testid="button-send-stk"
               >
                 Send Payment Request
@@ -148,8 +145,8 @@ export function MpesaPaymentModal({
             <div className="py-8 text-center space-y-4">
               <Loader2 className="w-16 h-16 mx-auto animate-spin text-green-600" />
               <div>
-                <h3 className="font-semibold text-lg">Processing Payment</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-lg text-gray-900">Processing Payment</h3>
+                <p className="text-sm text-gray-600">
                   {step === "processing" && pin.length === 0
                     ? "Check your phone for STK push..."
                     : "Confirming transaction..."}
@@ -163,8 +160,8 @@ export function MpesaPaymentModal({
             <div className="py-6 space-y-6">
               <div className="text-center space-y-2">
                 <Smartphone className="w-12 h-12 mx-auto text-green-600" />
-                <h3 className="font-semibold text-lg">Enter M-PESA PIN</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-lg text-gray-900">Enter M-PESA PIN</h3>
+                <p className="text-sm text-gray-600">
                   Enter your 4-digit M-PESA PIN
                 </p>
               </div>
@@ -175,8 +172,8 @@ export function MpesaPaymentModal({
                     key={i}
                     className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center text-2xl font-bold ${
                       pin.length > i
-                        ? "border-green-600 bg-green-50 dark:bg-green-950"
-                        : "border-muted"
+                        ? "border-green-600 bg-green-50 text-green-900"
+                        : "border-gray-300 text-gray-400"
                     }`}
                   >
                     {pin.length > i ? "•" : ""}
@@ -200,7 +197,7 @@ export function MpesaPaymentModal({
                   <Button
                     key={num}
                     variant="outline"
-                    className="h-14 text-lg font-semibold"
+                    className="h-14 text-lg font-semibold bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
                     onClick={() => {
                       if (num === "⌫") {
                         setPin(pin.slice(0, -1));
@@ -223,7 +220,7 @@ export function MpesaPaymentModal({
               <CheckCircle2 className="w-16 h-16 mx-auto text-green-600" />
               <div>
                 <h3 className="font-semibold text-lg text-green-600">Payment Successful!</h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-600">
                   KSh {amount.toLocaleString()} paid via M-PESA
                 </p>
               </div>
@@ -233,10 +230,10 @@ export function MpesaPaymentModal({
           {/* Failed */}
           {step === "failed" && (
             <div className="py-8 text-center space-y-4">
-              <XCircle className="w-16 h-16 mx-auto text-destructive" />
+              <XCircle className="w-16 h-16 mx-auto text-red-600" />
               <div>
-                <h3 className="font-semibold text-lg text-destructive">Payment Failed</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-lg text-red-600">Payment Failed</h3>
+                <p className="text-sm text-gray-600">
                   Please try again or use a different payment method
                 </p>
               </div>
@@ -246,7 +243,7 @@ export function MpesaPaymentModal({
                   setPin("");
                 }}
                 variant="outline"
-                className="w-full"
+                className="w-full bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
               >
                 Try Again
               </Button>

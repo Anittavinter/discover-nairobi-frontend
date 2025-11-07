@@ -38,11 +38,11 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" data-testid="link-logo">
-            <div className="flex items-center gap-2 hover-elevate px-3 py-2 rounded-md cursor-pointer">
+            <div className="flex items-center gap-2 cursor-pointer">
               <img 
                 src="/logo.png" 
                 alt="Discover Nairobi" 
-                className="h-14 w-14 object-contain"
+                className="h-10 w-10 object-contain"
               />
               <div className="font-display font-bold text-xl bg-gradient-to-r from-primary via-chart-2 to-chart-3 bg-clip-text text-transparent">
                 Discover Nairobi

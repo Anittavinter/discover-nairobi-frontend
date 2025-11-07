@@ -28,14 +28,10 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
   const eventUrl = `${window.location.origin}/events?id=${event.id}`;
   const eventDescription = encodeURIComponent(`${event.title} - ${format(event.date, "MMM d")} at ${event.time}`);
   
-  // Share URLs
   const whatsappUrl = `https://wa.me/?text=${eventDescription}%20${encodeURIComponent(eventUrl)}`;
   const twitterUrl = `https://twitter.com/intent/tweet?text=${eventDescription}&url=${encodeURIComponent(eventUrl)}`;
-  
-  // Google Maps URL
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`;
 
-  // Add to Google Calendar
   const calendarUrl = (() => {
     const startDate = format(event.date, "yyyyMMdd");
     const timeStr = event.time.replace(/[:\s]/g, '');
@@ -69,24 +65,25 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto !bg-white !text-gray-900">
         <div className="relative aspect-video overflow-hidden rounded-lg -mt-6 -mx-6 mb-4">
           <img
             src={event.imageUrl}
             alt={event.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/70" />
+          
           <div className="absolute top-4 left-4 flex gap-2">
-            <CategoryBadge category={event.category} className="bg-background/90 backdrop-blur-sm" />
-            <Badge variant="outline" className="bg-background/90 backdrop-blur-sm">
+            <CategoryBadge category={event.category} className="bg-white/20 backdrop-blur-sm text-white border-white/30" />
+            <Badge variant="outline" className="bg-white/20 backdrop-blur-sm text-white border-white/30">
               {event.neighborhood}
             </Badge>
           </div>
         </div>
 
         <DialogHeader>
-          <DialogTitle className="font-display text-3xl" data-testid="text-event-detail-title">
+          <DialogTitle className="font-display text-3xl text-gray-900" data-testid="text-event-detail-title">
             {event.title}
           </DialogTitle>
         </DialogHeader>
@@ -94,32 +91,31 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
         <div className="space-y-4">
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
-              <span className="font-medium">{format(event.date, "EEEE, MMMM d, yyyy")}</span>
+              <Calendar className="h-4 w-4 text-purple-600" />
+              <span className="font-medium text-gray-900">{format(event.date, "EEEE, MMMM d, yyyy")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-primary" />
-              <span>{event.time}</span>
+              <Clock className="h-4 w-4 text-purple-600" />
+              <span className="text-gray-900">{event.time}</span>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-primary" />
-              <span>{event.location}</span>
+              <MapPin className="h-4 w-4 text-purple-600" />
+              <span className="text-gray-900">{event.location}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              Organized by <span className="font-medium text-foreground">{event.organizer.name}</span>
+            <User className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600">
+              Organized by <span className="font-medium text-gray-900">{event.organizer.name}</span>
             </span>
           </div>
 
           <div className="pt-2">
-            <h3 className="font-display font-semibold mb-2">About this event</h3>
-            <p className="text-muted-foreground">{event.description}</p>
+            <h3 className="font-display font-semibold mb-2 text-gray-900">About this event</h3>
+            <p className="text-gray-700">{event.description}</p>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 pt-4">
             <Button 
               className="flex-1 min-w-[200px]" 
@@ -135,7 +131,7 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
             <div className="flex gap-2 flex-1 min-w-[200px]">
               <Button 
                 variant="outline" 
-                className="flex-1"
+                className="flex-1 bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
                 onClick={() => window.open(mapsUrl, '_blank')}
                 data-testid="button-directions"
               >
@@ -145,7 +141,7 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
               
               <Button 
                 variant="outline" 
-                className="flex-1"
+                className="flex-1 bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
                 onClick={() => window.open(calendarUrl, '_blank')}
                 data-testid="button-add-calendar"
               >
@@ -155,12 +151,11 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
             </div>
           </div>
 
-          {/* Share Section */}
-          <div className="border-t pt-4">
+          <div className="border-t border-gray-200 pt-4">
             {!showShareMenu ? (
               <Button 
                 variant="outline" 
-                className="w-full"
+                className="w-full bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
                 onClick={() => setShowShareMenu(true)}
                 data-testid="button-share"
               >
@@ -169,11 +164,11 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
               </Button>
             ) : (
               <div className="space-y-3">
-                <p className="text-sm font-medium">Share this event:</p>
+                <p className="text-sm font-medium text-gray-900">Share this event:</p>
                 <div className="grid grid-cols-3 gap-2">
                   <Button 
                     variant="outline" 
-                    className="flex-col h-auto py-3"
+                    className="flex-col h-auto py-3 bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
                     onClick={() => handleShare('whatsapp')}
                     data-testid="button-share-whatsapp"
                   >
@@ -183,17 +178,17 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
                   
                   <Button 
                     variant="outline" 
-                    className="flex-col h-auto py-3"
+                    className="flex-col h-auto py-3 bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
                     onClick={() => handleShare('twitter')}
                     data-testid="button-share-twitter"
                   >
-                    <SiX className="h-5 w-5 mb-1" />
+                    <SiX className="h-5 w-5 mb-1 text-gray-900" />
                     <span className="text-xs">Twitter</span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="flex-col h-auto py-3"
+                    className="flex-col h-auto py-3 bg-white text-gray-900 border-2 border-gray-300 hover:bg-gray-50"
                     onClick={() => handleShare('copy')}
                     data-testid="button-share-copy"
                   >
@@ -204,7 +199,7 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
                       </>
                     ) : (
                       <>
-                        <Share2 className="h-5 w-5 mb-1" />
+                        <Share2 className="h-5 w-5 mb-1 text-gray-900" />
                         <span className="text-xs">Copy Link</span>
                       </>
                     )}
@@ -213,7 +208,7 @@ export function EventDetailModal({ event, open, onClose }: EventDetailModalProps
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="w-full"
+                  className="w-full bg-transparent text-gray-900 hover:bg-gray-100"
                   onClick={() => setShowShareMenu(false)}
                 >
                   Cancel
