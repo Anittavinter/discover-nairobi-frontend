@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import {
   Plus,
   Calendar,
@@ -36,10 +36,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 export default function OrganizerDashboard() {
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [events, setEvents] = useState<OrganizerEvent[]>([]);
   const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
-const [organizer] = useState(ensureDefaultOrganizer());
+  const [organizer] = useState(ensureDefaultOrganizer());
+  
   useEffect(() => {
     loadEvents();
   }, []);
@@ -143,7 +145,7 @@ const [organizer] = useState(ensureDefaultOrganizer());
 
             {/* Actions */}
             <div className="flex gap-2 pt-4 border-t">
-              <Button size="sm" variant="outline" onClick={() => (window.location.href = `/events`)}>
+              <Button size="sm" variant="outline" onClick={() => setLocation("/events")}>
                 <BarChart3 className="w-4 h-4 mr-2" />
                 View Public Page
               </Button>
@@ -175,7 +177,7 @@ const [organizer] = useState(ensureDefaultOrganizer());
               <h1 className="text-4xl font-bold mb-2">Organizer Dashboard</h1>
               <p className="text-muted-foreground">Welcome back, {organizer.name}!</p>
             </div>
-            <Button onClick={() => (window.location.href = "/add-event")} data-testid="button-add-event">
+            <Button onClick={() => setLocation("/create-event")} data-testid="button-add-event">
               <Plus className="w-4 h-4 mr-2" />
               Add New Event
             </Button>
@@ -252,7 +254,7 @@ const [organizer] = useState(ensureDefaultOrganizer());
               {upcomingEvents.length === 0 ? (
                 <Card className="p-12 text-center">
                   <p className="text-muted-foreground mb-4">No upcoming events</p>
-                  <Button onClick={() => (window.location.href = "/add-event")}>
+                  <Button onClick={() => setLocation("/create-event")}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Your First Event
                   </Button>

@@ -24,6 +24,7 @@ import Profile from "@/pages/Profile";
 import AddEvent from "@/pages/AddEvent";
 import OrganizerDashboard from "@/pages/OrganizerDashboard";
 import BecomeOrganizer from "@/pages/BecomeOrganizer";
+import CreateEvent from "@/pages/CreateEvent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import NotFound from "@/pages/NotFound";
 
@@ -50,6 +51,7 @@ function Router() {
       <Route path="/add-event" component={AddEvent} />
       <Route path="/organizer" component={OrganizerDashboard} />
       <Route path="/organizer-dashboard" component={OrganizerDashboard} />
+      <Route path="/create-event" component={CreateEvent} />
       <Route component={NotFound} />
     </Switch>
   );
